@@ -309,7 +309,7 @@ function runSim(){
     const scored=pool.map((p,i)=>({p,i:RAW.indexOf(p),sim:Math.round(cosine(refVec,toVec(p))*1000)/10})).sort((a,b)=>b.sim-a.sim).slice(0,10);
     document.getElementById('rcount').textContent=`Searched ${pool.length.toLocaleString()} players`;
     document.getElementById('resultRows').innerHTML=scored.map(({p,i,sim},rank)=>`<div class="result-row" style="animation-delay:${rank*40}ms" onclick="compareWith(${i})"><div class="rr-rank">${String(rank+1).padStart(2,'0')}</div><div class="rr-info"><div class="rr-name">${p.name}</div><div class="rr-meta">${tags(p)}</div></div><div class="rr-stats"><div class="rr-stats-row"><span class="mini-stat"><b>${fmt(p.ppg)}</b> PPG</span><span class="mini-sep">·</span><span class="mini-stat"><b>${fmt(p.rpg)}</b> RPG</span><span class="mini-sep">·</span><span class="mini-stat"><b>${fmt(p.apg)}</b> APG</span></div><div class="rr-stats-row"><span class="mini-stat">TS% <b>${fmt(p.tsPct)}</b></span><span class="mini-sep">·</span><span class="mini-stat">PER <b>${fmt(p.per)}</b></span></div></div><div class="rr-sim"><div class="sim-pct">${sim}%</div><div class="sim-bar"><div class="sim-fill" style="width:${sim}%"></div></div><div class="sim-lbl">similarity</div></div></div>`).join('');
-    rs.scrollIntoView({behavior:'smooth',block:'start'});
+    // no auto-scroll
   },300);
 }
 function compareWith(idx){
@@ -319,7 +319,7 @@ function compareWith(idx){
   const lb=new Set(['tov','tovPct']);
   const rows=stats.map(([label,key])=>{const av=sf(A[key]),bv=sf(B[key]);const aW=lb.has(key)?(av<bv&&av>0):(av>bv);const bW=lb.has(key)?(bv<av&&bv>0):(bv>av);return`<div style="display:grid;grid-template-columns:1fr 60px 1fr;gap:1px;background:var(--border);margin-bottom:1px"><div style="background:var(--white);padding:9px 12px;text-align:right;font-size:13px;font-weight:${aW?700:400};color:${aW?'var(--gold)':'var(--blue)'}">${fmt(av)}</div><div style="background:var(--blue-lt);padding:9px 4px;text-align:center;font-size:8px;font-weight:700;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;display:flex;align-items:center;justify-content:center">${label}</div><div style="background:var(--white);padding:9px 12px;text-align:left;font-size:13px;font-weight:${bW?700:400};color:${bW?'var(--gold)':'var(--blue)'}">${fmt(bv)}</div></div>`}).join('');
   document.getElementById('compareGrid').innerHTML=`<div style="display:grid;grid-template-columns:1fr 60px 1fr;gap:1px;background:var(--border);margin-bottom:1px"><div class="cmp-header"><div class="cmp-pname">${A.name}</div><div class="cmp-pmeta">${A.team} · ${A.season}</div></div><div style="background:var(--blue-lt)"></div><div class="cmp-header"><div class="cmp-pname">${B.name}</div><div class="cmp-pmeta">${B.team} · ${B.season}</div></div></div>${rows}`;
-  const cs=document.getElementById('compareSection');cs.classList.add('show');cs.scrollIntoView({behavior:'smooth',block:'start'});
+  const cs=document.getElementById('compareSection');cs.classList.add('show');// no auto-scroll
 }
 function closeCompare(){document.getElementById('compareSection').classList.remove('show')}
 function openProfile(idx){
