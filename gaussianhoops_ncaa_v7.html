@@ -198,33 +198,19 @@ body{font-family:'Libre Franklin',sans-serif;background:var(--bg);color:var(--te
   .rr-stats{display:none}
 }
 
-/* Reserve scrollbar space always to prevent layout shift */
-html {
-  overflow-y: scroll; /* always show scrollbar — prevents width shift */
-  scrollbar-width: thin;
-  scrollbar-color: transparent transparent;
-}
-html::-webkit-scrollbar {
-  width: 6px;
-}
-html::-webkit-scrollbar-track {
-  background: transparent;
-}
-html::-webkit-scrollbar-thumb {
-  background: transparent;
-}
-body {
+/* No scrollbar — page scrolls, not iframe */
+html, body {
+  overflow: hidden;
   overflow-x: hidden;
   width: 100%;
+  height: auto;
 }
 </style>
 
 <script>
-// Lock layout width — prevent scrollbar-induced shift
-(function(){
-  // Force scrollbar to always be present so it never causes a shift
-  document.documentElement.style.overflowY = 'scroll';
-})();
+// No scrollbar in iframe — parent page scrolls
+document.documentElement.style.overflow = 'hidden';
+document.documentElement.style.height = 'auto';
 </script>
 </head>
 <body>
