@@ -169,7 +169,7 @@ function applyFilters(){
   filtered.sort((a,b)=>{
     let av=a[sortCol],bv=b[sortCol];
     if(typeof av==='string')return sortDir*(av||'').localeCompare(bv||'');
-    return sortDir*((av||0)-(bv||0));
+    return sortDir*((bv||0)-(av||0));
   });
   page=1;render();
 }
