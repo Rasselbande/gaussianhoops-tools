@@ -123,14 +123,14 @@ body{font-family:'Libre Franklin',sans-serif;background:var(--bg);color:var(--te
 .spinner span:nth-child(3){animation-delay:.3s}
 @keyframes bounce{0%,80%,100%{transform:scale(.6);opacity:.3}40%{transform:scale(1);opacity:1}}
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(4,68,108,.5);z-index:1000;overflow-y:auto;padding:20px}
-.modal-overlay.show{display:flex;align-items:flex-start;justify-content:center}
-.modal{background:var(--white);width:100%;max-width:700px;margin:auto;box-shadow:var(--sh-lg)}
+.modal-overlay.show{display:flex;align-items:center;justify-content:center}
+.modal{background:var(--white);width:100%;max-width:700px;margin:auto;box-shadow:var(--sh-lg);max-height:90vh;overflow-y:auto}
 .modal-header{background:var(--blue);padding:20px 24px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
 .modal-name{font-size:20px;font-weight:800;color:#fff;margin-bottom:6px}
 .modal-meta{display:flex;gap:4px;flex-wrap:wrap}
 .modal-close{background:none;border:1px solid rgba(255,255,255,.4);color:#fff;font-size:16px;width:32px;height:32px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center}
-.modal-body{padding:20px;overflow-x:auto}
-.history-row{display:grid;grid-template-columns:80px repeat(8,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:1px}
+.modal-body{padding:20px;overflow-x:hidden}
+.history-row{display:grid;grid-template-columns:80px repeat(8,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:1px;min-width:0}
 .history-cell{background:var(--white);padding:10px 6px;text-align:center;font-size:12px}
 .history-cell.head{background:var(--blue-lt);font-size:9px;font-weight:700;color:var(--muted);letter-spacing:.8px;text-transform:uppercase}
 .history-cell.season-lbl{font-weight:700;color:var(--blue)}
@@ -161,8 +161,8 @@ body{font-family:'Libre Franklin',sans-serif;background:var(--bg);color:var(--te
   .sim-lbl{display:none}
   .modal-overlay{padding:0}
   .modal{max-width:100%}
-  .history-row{grid-template-columns:60px repeat(4,1fr)}
-  .history-cell:nth-child(n+7){display:none}
+  .history-row{grid-template-columns:55px repeat(5,1fr)}
+  .history-cell:nth-child(n+8){display:none}
 }
 @media(min-width:601px) and (max-width:900px){
   .result-table-head{grid-template-columns:44px 1fr 110px}
@@ -188,7 +188,7 @@ body{font-family:'Libre Franklin',sans-serif;background:var(--bg);color:var(--te
   <div class="search-row">
     <div class="search-wrap">
       <span class="search-icon">⌕</span>
-      <input class="si" id="si" type="text" placeholder="Enter player name (e.g. Cooper Flagg…)" oninput="onSearch(this.value)" autocomplete="off">
+      <input class="si" id="si" type="text" placeholder="Enter player name (e.g. Cameron Boozer…)" oninput="onSearch(this.value)" autocomplete="off">
       <div class="ac" id="ac"></div>
     </div>
     <button class="btn" onclick="runSim()">Find Similar Players</button>
@@ -233,6 +233,7 @@ body{font-family:'Libre Franklin',sans-serif;background:var(--bg);color:var(--te
   </div>
   <div id="compareGrid"></div>
 </div>
+<div id="resultsAnchor" style="scroll-margin-top:8px"></div>
 <div class="results-section" id="resultsSection">
   <div class="results-header">
     <div class="results-title">10 Most Similar Players</div>
@@ -309,7 +310,7 @@ function runSim(){
     const scored=pool.map((p,i)=>({p,i:RAW.indexOf(p),sim:Math.round(cosine(refVec,toVec(p))*1000)/10})).sort((a,b)=>b.sim-a.sim).slice(0,10);
     document.getElementById('rcount').textContent=`Searched ${pool.length.toLocaleString()} players`;
     document.getElementById('resultRows').innerHTML=scored.map(({p,i,sim},rank)=>`<div class="result-row" style="animation-delay:${rank*40}ms" onclick="compareWith(${i})"><div class="rr-rank">${String(rank+1).padStart(2,'0')}</div><div class="rr-info"><div class="rr-name">${p.name}</div><div class="rr-meta">${tags(p)}</div></div><div class="rr-stats"><div class="rr-stats-row"><span class="mini-stat"><b>${fmt(p.ppg)}</b> PPG</span><span class="mini-sep">·</span><span class="mini-stat"><b>${fmt(p.rpg)}</b> RPG</span><span class="mini-sep">·</span><span class="mini-stat"><b>${fmt(p.apg)}</b> APG</span></div><div class="rr-stats-row"><span class="mini-stat">TS% <b>${fmt(p.tsPct)}</b></span><span class="mini-sep">·</span><span class="mini-stat">PER <b>${fmt(p.per)}</b></span></div></div><div class="rr-sim"><div class="sim-pct">${sim}%</div><div class="sim-bar"><div class="sim-fill" style="width:${sim}%"></div></div><div class="sim-lbl">similarity</div></div></div>`).join('');
-    setTimeout(()=>{const el=document.getElementById('resultsSection');const y=el.getBoundingClientRect().top+window.pageYOffset-8;window.scrollTo({top:y,behavior:'smooth'});},50);
+    setTimeout(()=>{document.getElementById('resultsSection').scrollIntoView({behavior:'smooth',block:'nearest'});},400);
   },300);
 }
 function compareWith(idx){
@@ -319,7 +320,7 @@ function compareWith(idx){
   const lb=new Set(['tov','tovPct']);
   const rows=stats.map(([label,key])=>{const av=sf(A[key]),bv=sf(B[key]);const aW=lb.has(key)?(av<bv&&av>0):(av>bv);const bW=lb.has(key)?(bv<av&&bv>0):(bv>av);return`<div style="display:grid;grid-template-columns:1fr 60px 1fr;gap:1px;background:var(--border);margin-bottom:1px"><div style="background:var(--white);padding:9px 12px;text-align:right;font-size:13px;font-weight:${aW?700:400};color:${aW?'var(--gold)':'var(--blue)'}">${fmt(av)}</div><div style="background:var(--blue-lt);padding:9px 4px;text-align:center;font-size:8px;font-weight:700;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;display:flex;align-items:center;justify-content:center">${label}</div><div style="background:var(--white);padding:9px 12px;text-align:left;font-size:13px;font-weight:${bW?700:400};color:${bW?'var(--gold)':'var(--blue)'}">${fmt(bv)}</div></div>`}).join('');
   document.getElementById('compareGrid').innerHTML=`<div style="display:grid;grid-template-columns:1fr 60px 1fr;gap:1px;background:var(--border);margin-bottom:1px"><div class="cmp-header"><div class="cmp-pname">${A.name}</div><div class="cmp-pmeta">${A.team} · ${A.season}</div></div><div style="background:var(--blue-lt)"></div><div class="cmp-header"><div class="cmp-pname">${B.name}</div><div class="cmp-pmeta">${B.team} · ${B.season}</div></div></div>${rows}`;
-  const cs=document.getElementById('compareSection');cs.classList.add('show');setTimeout(()=>{const el=document.getElementById('resultsSection');const y=el.getBoundingClientRect().top+window.pageYOffset-8;window.scrollTo({top:y,behavior:'smooth'});},50);
+  const cs=document.getElementById('compareSection');cs.classList.add('show');setTimeout(()=>{document.getElementById('resultsSection').scrollIntoView({behavior:'smooth',block:'nearest'});},400);
 }
 function closeCompare(){document.getElementById('compareSection').classList.remove('show')}
 function openProfile(idx){
