@@ -199,6 +199,27 @@ body{font-family:'Libre Franklin',sans-serif;background:var(--bg);color:var(--te
   .result-row{grid-template-columns:44px 1fr 110px}
   .rr-stats{display:none}
 }
+
+/* ── OVERFLOW FIX ── */
+html { overflow-x: hidden; box-sizing: border-box; }
+*, *::before, *::after { box-sizing: border-box; }
+body { overflow-x: hidden; max-width: 100vw; }
+.card { overflow: hidden; }
+.filter-row { overflow-x: hidden; }
+.fs { min-width: 0; max-width: 100%; }
+.season-tabs { overflow: hidden; max-width: 100%; }
+.result-table { overflow-x: hidden; }
+.pc-meta, .rr-meta, .modal-meta { overflow: hidden; }
+.badge { display: inline-block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+
+/* ensure iframe fills correctly */
+@media(max-width: 600px) {
+  .card { padding: 14px; }
+  .modal-overlay { padding: 0; }
+  .modal { width: 100vw; min-height: 100vh; }
+  .compare-grid { overflow-x: auto; }
+  .history-row { min-width: 0; }
+}
 </style>
 </head>
 <body>
