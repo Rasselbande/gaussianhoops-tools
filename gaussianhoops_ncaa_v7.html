@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>NCAA | Similar Players | Gaussianhoops</title>
 <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -197,7 +197,35 @@ body{font-family:'Libre Franklin',sans-serif;background:var(--bg);color:var(--te
   .result-row{grid-template-columns:44px 1fr 110px}
   .rr-stats{display:none}
 }
+
+/* Reserve scrollbar space always to prevent layout shift */
+html {
+  overflow-y: scroll; /* always show scrollbar — prevents width shift */
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+html::-webkit-scrollbar {
+  width: 6px;
+}
+html::-webkit-scrollbar-track {
+  background: transparent;
+}
+html::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+body {
+  overflow-x: hidden;
+  width: 100%;
+}
 </style>
+
+<script>
+// Lock layout width — prevent scrollbar-induced shift
+(function(){
+  // Force scrollbar to always be present so it never causes a shift
+  document.documentElement.style.overflowY = 'scroll';
+})();
+</script>
 </head>
 <body>
 
