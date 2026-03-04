@@ -434,13 +434,13 @@ searchInput.addEventListener('input', () => {
   const matches = PLAYERS.filter(p => p.name.toLowerCase().includes(q)).slice(0, 10);
   if (!matches.length) { searchDropdown.classList.remove('open'); return; }
   searchDropdown.innerHTML = matches.map(p => `
-    <div class="search-item" onclick="loadPlayer(${JSON.stringify(p.name)})">
+    <div class="search-item" onmousedown="event.preventDefault(); loadPlayer(${JSON.stringify(p.name)})">
       <span class="si-name">${p.name}</span>
-      <span class="si-meta">${p.team_abbr} · ${p.pos_group} · ${p.tier}</span>
+      <span class="si-meta">${p.full_name} · ${p.pos_group} · ${p.tier}</span>
     </div>`).join('');
   searchDropdown.classList.add('open');
 });
-document.addEventListener('click', e => {
+document.addEventListener('mousedown', e => {
   if (!e.target.closest('.search-wrap')) searchDropdown.classList.remove('open');
 });
 
