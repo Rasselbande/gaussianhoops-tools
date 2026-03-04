@@ -428,20 +428,40 @@ const TABLE_DEF = {
 const searchInput = document.getElementById('searchInput');
 const searchDropdown = document.getElementById('searchDropdown');
 
+let dropdownLocked = false;
+
 searchInput.addEventListener('input', () => {
   const q = searchInput.value.trim().toLowerCase();
   if (q.length < 2) { searchDropdown.classList.remove('open'); return; }
   const matches = PLAYERS.filter(p => p.name.toLowerCase().includes(q)).slice(0, 10);
   if (!matches.length) { searchDropdown.classList.remove('open'); return; }
   searchDropdown.innerHTML = matches.map(p => `
-    <div class="search-item" onmousedown="event.preventDefault(); loadPlayer(${JSON.stringify(p.name)})">
+    <div class="search-item"
+      onmousedown="dropdownLocked=true;"
+      onmouseup="dropdownLocked=false; loadPlayer(${JSON.stringify(p.name)});"
+      ontouchend="event.preventDefault(); loadPlayer(${JSON.stringify(p.name)});">
       <span class="si-name">${p.name}</span>
       <span class="si-meta">${p.full_name} · ${p.pos_group} · ${p.tier}</span>
     </div>`).join('');
   searchDropdown.classList.add('open');
 });
+
+searchInput.addEventListener('blur', () => {
+  if (!dropdownLocked) {
+    setTimeout(() => searchDropdown.classList.remove('open'), 150);
+  }
+});
+
+searchInput.addEventListener('focus', () => {
+  if (searchInput.value.trim().length >= 2) {
+    searchDropdown.classList.add('open');
+  }
+});
+
 document.addEventListener('mousedown', e => {
-  if (!e.target.closest('.search-wrap')) searchDropdown.classList.remove('open');
+  if (!e.target.closest('.search-wrap')) {
+    searchDropdown.classList.remove('open');
+  }
 });
 
 function loadPlayer(name) {
