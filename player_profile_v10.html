@@ -635,18 +635,6 @@ function renderProfile(p) {
       </div>
     </div>
 
-    <div class="method-section">
-      <button class="method-toggle" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
-        <div><span>◈</span>How are percentiles calculated?</div>
-        <span class="chevron">▼</span>
-      </button>
-      <div class="method-body">
-        <p><strong>Qualification threshold:</strong> Only players with ≥ 10 games played and ≥ 12 minutes per game are included in percentile calculations. This filters out players with too few appearances for meaningful comparison.</p>
-        <p><strong>Percentile rank:</strong> A percentile of <strong>85</strong> means this player ranks better than 85% of all qualified players at the same position in the same season. Percentiles are calculated within position groups (Guard, Wing, Forward, Big) so guards are only compared to guards, bigs to bigs, etc.</p>
-        <p><strong>Radar chart:</strong> Each axis shows the player's percentile rank (0–100) for that metric. The outer ring = 100th percentile (elite). The middle ring (gold) = 50th percentile (average). Larger area = more well-rounded player.</p>
-        <p><strong>Season:</strong> Currently showing <strong>2025–26</strong> season data only. Historical seasons (2024–25) will be added soon.</p>
-      </div>
-    </div>
   `;
 
   drawRadar('radarCanvas', radarKeys, radarVals);
