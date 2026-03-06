@@ -257,6 +257,7 @@ body {
     flex-wrap: wrap;
     gap: 16px;
     padding: 16px;
+    align-items: flex-start;
   }
   .player-identity {
     flex: 0 0 auto;
@@ -273,12 +274,24 @@ body {
   }
   .player-name {
     font-size: 20px;
+    text-align: left;
   }
   .info-block {
     flex: 1 1 40%;
     border-right: none;
     padding-right: 0;
     margin-right: 0;
+    text-align: left;
+  }
+  .info-row {
+    text-align: left;
+  }
+  .info-label {
+    text-align: left;
+  }
+  .info-value {
+    text-align: left;
+    white-space: normal;
   }
   .player-stats-right {
     width: 100%;
@@ -712,8 +725,8 @@ function renderProfile(p) {
           <span class="info-value">${p.conference}</span>
         </div>
         <div class="info-row">
-          <span class="info-label">Country</span>
-          <span class="info-value">${p.nationality || '—'}</span>
+          <span class="info-label">Tier</span>
+          <span class="info-value">${p.tier || '—'}</span>
         </div>
       </div>
       <!-- Block 4: Stats horizontal in gold -->
