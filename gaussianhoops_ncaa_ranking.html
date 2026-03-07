@@ -211,13 +211,9 @@ function render(){
   renderPagination();
 }
 
-function renderPagination(){
-  const total=Math.ceil(filtered.length/PER);
-  if(total<=1){document.getElementById('pagination').innerHTML='';return;}
-
 const TIER_CONF = {
-  'all':      ['ACC','B10','B12','SEC','Big East','AAC','A-10','MWC','WCC','Sun Belt','C-USA','MAC','OVC','Patriot','SoCon','CAA','Horizon','IVY','MEAC','SWAC','NEC','AEC','A-SUN','BSKY','WAC','MVC','MAAC','Summit','SLC','BWC','SWC','BSC'],
-  'Power 5':  ['ACC','B10','B12','SEC','Big East'],
+  'all':       ['ACC','B10','B12','SEC','Big East','AAC','A-10','MWC','WCC','Sun Belt','C-USA','MAC','OVC','Patriot','SoCon','CAA','Horizon','IVY','MEAC','SWAC','NEC','AEC','A-SUN','BSKY','WAC','MVC','MAAC','Summit','SLC','BWC','SWC','BSC'],
+  'Power 5':   ['ACC','B10','B12','SEC','Big East'],
   'High-Major':['AAC','A-10','MWC','WCC','MVC','MAAC'],
   'Mid-Major': ['Sun Belt','C-USA','MAC','OVC','SoCon','CAA','Horizon','IVY','WAC','Summit','SLC'],
   'Low-Major': ['Patriot','MEAC','SWAC','NEC','AEC','A-SUN','BSKY','BWC','SWC','BSC'],
@@ -230,11 +226,13 @@ function updateConfFilter() {
   const cur   = sel.value;
   sel.innerHTML = '<option value="all">All Conferences</option>'
     + confs.map(c => `<option${c===cur?' selected':''}>${c}</option>`).join('');
-  // Wenn aktuell gewählte Conf nicht mehr in der Liste → zurücksetzen
   if (cur !== 'all' && !confs.includes(cur)) sel.value = 'all';
 }
 
-  let h='<button class="pg-btn" onclick="goPage('+(page-1)+')"' '+(page===1?'disabled':'')+'>&#8249;</button>';
+function renderPagination(){
+  const total=Math.ceil(filtered.length/PER);
+  if(total<=1){document.getElementById('pagination').innerHTML='';return;}
+  let h='<button class="pg-btn" onclick="goPage('+(page-1)+')" '+(page===1?'disabled':'')+'>&#8249;</button>';
   let s=Math.max(1,page-2),e=Math.min(total,page+2);
   if(s>1)h+='<button class="pg-btn" onclick="goPage(1)">1</button>'+(s>2?'<span class="pg-info">...</span>':'');
   for(let i=s;i<=e;i++)h+='<button class="pg-btn '+(i===page?'active':'')+'" onclick="goPage('+i+')">'+i+'</button>';
