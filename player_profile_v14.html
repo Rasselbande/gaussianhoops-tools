@@ -442,7 +442,7 @@ body {
     align-items: flex-start;
   }
   .player-identity {
-    flex: 0 0 auto;
+    flex: 0 0 100%;
     flex-direction: row;
     align-items: center;
     border-right: none;
@@ -450,23 +450,25 @@ body {
     padding-right: 0;
     padding-bottom: 14px;
     margin-right: 0;
-    width: 100%;
     gap: 12px;
   }
   .player-name { font-size: 20px; text-align: left; }
   .info-block {
     flex: 1 1 40%;
-    border-right: none;
+    border-right: none !important;
+    border-left: none !important;
     padding-right: 0;
     margin-right: 0;
     text-align: left;
   }
+  .info-block:last-of-type { border-right: none !important; }
   .info-row { text-align: left; flex-direction: column; gap: 1px; }
   .info-label { text-align: left; }
   .info-value { text-align: left; white-space: normal; }
   .player-stats-right {
+    flex: 0 0 100%;
     width: 100%;
-    border-left: none;
+    border-left: none !important;
     border-top: 1px solid rgba(255,255,255,0.15);
     padding-top: 14px;
     padding-left: 0;
