@@ -436,65 +436,35 @@ body {
 /* ── Mobile iPhone ── */
 @media (max-width: 600px) {
   .player-header {
-    display: block !important;
-    padding: 14px 14px 16px !important;
+    padding: 14px !important;
+    align-items: flex-start !important;
   }
   .player-identity {
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: center !important;
-    gap: 12px;
-    padding-bottom: 12px;
-    margin-bottom: 12px;
     border-right: none !important;
-    border-bottom: 1px solid rgba(255,255,255,0.18);
-    width: 100%;
   }
   .player-name {
     font-size: 18px !important;
-    white-space: normal !important;
   }
   .info-block {
-    display: inline-block !important;
-    width: calc(50% - 4px) !important;
-    vertical-align: top !important;
     border-right: none !important;
-    border-left: none !important;
-    padding-right: 0 !important;
-    margin-right: 0 !important;
-    margin-bottom: 12px;
-    box-sizing: border-box !important;
+    text-align: left !important;
   }
   .info-row {
-    display: block !important;
-    margin-bottom: 6px;
+    text-align: left !important;
   }
   .info-label {
-    display: block !important;
-    font-size: 10px;
     text-align: left !important;
   }
   .info-value {
-    display: block !important;
-    font-size: 13px;
     text-align: left !important;
     white-space: normal !important;
-    word-break: break-word;
   }
   .player-stats-right {
-    display: flex !important;
-    flex-direction: row !important;
-    width: 100% !important;
-    justify-content: space-around !important;
     border-left: none !important;
-    border-top: 1px solid rgba(255,255,255,0.18);
-    padding-top: 12px;
+    justify-content: space-around !important;
     padding-left: 0 !important;
     margin-left: 0 !important;
-    margin-top: 4px;
-    align-items: center;
   }
-  .stat-val { font-size: 22px !important; }
 }
 </style>
 </head>
