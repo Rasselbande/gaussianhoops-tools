@@ -652,8 +652,16 @@ function drawRadar(id, keys, vals) {
   });
 }
 
-/* ── Auto demo ── */
+/* ── Auto load: URL-Parameter oder Demo ── */
 (function() {
+  const params = new URLSearchParams(window.location.search);
+  const playerParam = params.get('player');
+  if (playerParam) {
+    // Aus Ranking-Seite geöffnet
+    const found = PLAYERS.find(p => p.name === decodeURIComponent(playerParam));
+    if (found) { loadPlayer(found.name); return; }
+  }
+  // Fallback Demo
   const demo = PLAYERS.find(p => p.name === 'Cameron Boozer');
   if (demo) loadPlayer('Cameron Boozer');
 })();
