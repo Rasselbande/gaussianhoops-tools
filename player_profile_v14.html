@@ -190,7 +190,7 @@ body {
   flex-direction: column;
   gap: 5px;
   padding-right: 24px;
-  border-right: 1px solid rgba(255,255,255,0.12);
+  border-right: none;
   margin-right: 24px;
 }
 .info-block:last-of-type {
@@ -437,10 +437,11 @@ body {
 @media (max-width: 600px) {
   .player-header {
     display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
     grid-template-rows: auto auto auto !important;
     gap: 14px 12px;
     padding: 16px;
+    overflow: hidden;
   }
   .player-identity {
     grid-column: 1 / -1;
