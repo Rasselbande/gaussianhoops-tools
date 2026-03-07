@@ -432,6 +432,48 @@ body {
   .pct-lbl { width: 52px; font-size: 11px; }
   .pct-raw { width: 40px; font-size: 12px; }
 }
+
+/* ── Mobile iPhone ── */
+@media (max-width: 600px) {
+  .player-header {
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 16px;
+    align-items: flex-start;
+  }
+  .player-identity {
+    flex: 0 0 auto;
+    flex-direction: row;
+    align-items: center;
+    border-right: none;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+    padding-right: 0;
+    padding-bottom: 14px;
+    margin-right: 0;
+    width: 100%;
+    gap: 12px;
+  }
+  .player-name { font-size: 20px; text-align: left; }
+  .info-block {
+    flex: 1 1 40%;
+    border-right: none;
+    padding-right: 0;
+    margin-right: 0;
+    text-align: left;
+  }
+  .info-row { text-align: left; flex-direction: column; gap: 1px; }
+  .info-label { text-align: left; }
+  .info-value { text-align: left; white-space: normal; }
+  .player-stats-right {
+    width: 100%;
+    border-left: none;
+    border-top: 1px solid rgba(255,255,255,0.15);
+    padding-top: 14px;
+    padding-left: 0;
+    margin-left: 0;
+    justify-content: space-around;
+  }
+}
 </style>
 </head>
 <body>
@@ -657,7 +699,7 @@ function renderProfile(p) {
         <div class="info-block">
           <div class="info-row"><span class="info-label">School</span><span class="info-value">${p.full_name}</span></div>
           <div class="info-row"><span class="info-label">Conference</span><span class="info-value">${p.conference}</span></div>
-          <div class="info-row"><span class="info-label">Country</span><span class="info-value">${p.nationality || '—'}</span></div>
+          <div class="info-row"><span class="info-label">Tier</span><span class="info-value">${p.tier || '—'}</span></div>
         </div>
         <!-- Stats rechts -->
         <div class="player-stats-right">
