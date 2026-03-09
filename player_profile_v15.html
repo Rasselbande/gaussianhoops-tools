@@ -149,7 +149,7 @@ body {
   border-bottom: 1px solid rgba(255,255,255,0.12);
 }
 .pc-photo {
-  width: 96px; height: 96px;
+  width: 120px; height: 120px;
   border-radius: 8px;
   overflow: hidden;
   background: rgba(255,255,255,0.1);
@@ -303,6 +303,17 @@ body {
 .stats-tab.active { color: var(--navy); border-bottom-color: var(--gold); }
 .stats-tab:hover:not(.active) { color: var(--navy); }
 .stats-table-wrap { overflow-x: scroll; }
+.stats-table-wrap::-webkit-scrollbar {
+  height: 8px;
+  background: #e8eef2;
+}
+.stats-table-wrap::-webkit-scrollbar-thumb {
+  background: var(--navy);
+  border-radius: 4px;
+}
+.stats-table-wrap::-webkit-scrollbar-thumb:hover {
+  background: var(--gold);
+}
 .stats-table {
   width: 100%; border-collapse: collapse;
   font-size: 13px; white-space: nowrap;
