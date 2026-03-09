@@ -385,6 +385,34 @@ body {
   /* Stats bleiben in einer Reihe */
   .pc-stats { padding: 12px 16px; }
   .pc-stat-val { font-size: 22px; }
+
+  /* Verhindere horizontales Scrollen auf Seitenebene */
+  html, body { overflow-x: hidden; max-width: 100%; }
+
+  /* Cards: weniger Innenabstand */
+  .card-body { padding: 12px; }
+  .card-head { padding: 8px 12px; }
+
+  /* Stats-Tabelle: scrollt intern, sprengt nicht die Seite */
+  .stats-table-wrap {
+    max-width: calc(100vw - 24px);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Percentile-Zeilen: etwas schmaler */
+  .pct-lbl { width: 44px; font-size: 10px; }
+  .pct-raw { width: 36px; font-size: 12px; }
+  .pct-rank { width: 26px; font-size: 12px; }
+
+  /* Radar: immer 100% der verfügbaren Breite */
+  #radarCanvas { max-width: 100%; height: auto !important; }
+
+  /* Suche: volle Breite */
+  .search-wrap { max-width: 100%; }
+
+  /* Methodik-Box */
+  .method-body { font-size: 12px; padding: 12px 14px; }
 }
 </style>
 </head>
