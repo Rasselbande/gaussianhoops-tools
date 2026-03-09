@@ -217,6 +217,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  min-width: 0; /* verhindert dass Grid-Zelle sich über 1fr ausdehnt */
 }
 
 /* ── Stats table: scroll auf desktop ── */
@@ -240,7 +241,7 @@ body {
   background: var(--bg2);
   border: 1px solid var(--border);
   border-radius: 8px;
-  overflow: visible;
+  overflow: hidden;
 }
 .card-head {
   border-radius: 8px 8px 0 0;
