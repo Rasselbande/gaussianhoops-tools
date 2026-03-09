@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Player Comparison — Gaussian Hoops</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy:   #04446C;
+      --gold:   #EBA044;
+      --bg:     #F4F7FA;
+      --bg2:    #FFFFFF;
+      --border: #D8E3EC;
+      --text:   #1A2533;
+      --muted:  #6B8499;
+      --c1:     #04446C;
+      --c2:     #EBA044;
+      --c3:     #2A9D8F;
+      --c4:     #E63946;
+      --c5:     #7B2D8B;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Libre Franklin', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    /* ── Nav ── */
+    .nav {
+      background: var(--navy);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      gap: 0;
+      height: 52px;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .nav-logo {
+      font-size: 15px; font-weight: 800;
+      color: #fff; text-decoration: none;
+      letter-spacing: 0.5px; margin-right: 28px;
+    }
+    .nav-logo span { color: var(--gold); }
+    .nav-link {
+      color: rgba(255,255,255,0.7); text-decoration: none;
+      font-size: 12px; font-weight: 600;
+      padding: 0 14px; height: 52px;
+      display: flex; align-items: center;
+      letter-spacing: 0.5px; text-transform: uppercase;
+      border-bottom: 3px solid transparent;
+      transition: all 0.15s;
+    }
+    .nav-link:hover  { color: #fff; }
+    .nav-link.active { color: #fff; border-bottom-color: var(--gold); }
+
+    /* ── Page wrapper ── */
+    .page-wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 28px 20px 60px;
+    }
+
+    /* ── Page header ── */
+    .page-header {
+      margin-bottom: 24px;
+    }
+    .page-title {
+      font-size: 22px; font-weight: 800; color: var(--navy);
+      letter-spacing: -0.3px;
+    }
+    .page-subtitle {
+      font-size: 12px; color: var(--muted); margin-top: 4px;
+    }
+
+    /* ── Selector row ── */
+    .selector-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 28px;
+      align-items: flex-start;
+    }
+    .slot {
+      position: relative;
+      width: 200px;
+    }
+    .slot-color-bar {
+      height: 3px;
+      border-radius: 2px 2px 0 0;
+    }
+    .slot-inner {
+      border: 1px solid var(--border);
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+      background: var(--bg2);
+      overflow: hidden;
+    }
+    .slot-empty {
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .slot-search {
+      border: none; outline: none;
+      font-family: 'Libre Franklin', sans-serif;
+      font-size: 13px; color: var(--text);
+      background: none; width: 100%;
+      padding: 0;
+    }
+    .slot-search::placeholder { color: var(--muted); }
+    .slot-filled {
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .slot-photo {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: var(--border);
+      flex-shrink: 0;
+    }
+    .slot-info { flex: 1; min-width: 0; }
+    .slot-name {
+      font-size: 12px; font-weight: 700;
+      color: var(--text);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .slot-sub {
+      font-size: 10px; color: var(--muted);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .slot-remove {
+      background: none; border: none;
+      color: var(--muted); cursor: pointer;
+      font-size: 16px; line-height: 1;
+      padding: 2px 4px;
+      flex-shrink: 0;
+    }
+    .slot-remove:hover { color: var(--text); }
+
+    /* dropdown */
+    .slot-dropdown {
+      position: absolute;
+      top: calc(100% + 2px);
+      left: 0; right: 0;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+      z-index: 200;
+      max-height: 220px;
+      overflow-y: auto;
+      display: none;
+    }
+    .slot-dropdown.open { display: block; }
+    .dd-item {
+      padding: 8px 12px;
+      cursor: pointer;
+      display: flex; align-items: center; gap: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .dd-item:last-child { border-bottom: none; }
+    .dd-item:hover { background: var(--bg); }
+    .dd-photo {
+      width: 28px; height: 28px;
+      border-radius: 50%; object-fit: cover;
+      background: var(--border); flex-shrink: 0;
+    }
+    .dd-name { font-size: 12px; font-weight: 700; color: var(--text); }
+    .dd-sub  { font-size: 10px; color: var(--muted); }
+
+    .add-slot-btn {
+      width: 200px;
+      border: 2px dashed var(--border);
+      border-radius: 8px;
+      background: none;
+      cursor: pointer;
+      padding: 10px 12px;
+      font-family: 'Libre Franklin', sans-serif;
+      font-size: 12px; font-weight: 600;
+      color: var(--muted);
+      display: flex; align-items: center; gap: 6px;
+      transition: all 0.15s;
+    }
+    .add-slot-btn:hover { border-color: var(--navy); color: var(--navy); }
+
+    /* share button */
+    .share-btn {
+      margin-left: auto;
+      background: var(--navy);
+      color: #fff;
+      border: none; border-radius: 6px;
+      padding: 9px 16px;
+      font-family: 'Libre Franklin', sans-serif;
+      font-size: 12px; font-weight: 700;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      display: flex; align-items: center; gap: 6px;
+      transition: background 0.15s;
+    }
+    .share-btn:hover { background: #033660; }
+    .share-btn.copied { background: #2A9D8F; }
+
+    /* ── Empty state ── */
+    .empty-state {
+      text-align: center;
+      padding: 80px 24px;
+      color: var(--muted);
+    }
+    .empty-icon { font-size: 48px; opacity: 0.2; margin-bottom: 16px; }
+    .empty-state h2 { font-size: 20px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+    .empty-state p { font-size: 13px; }
+
+    /* ── Compare content ── */
+    .compare-content { display: none; }
+    .compare-content.visible { display: block; }
+
+    /* ── Player cards row ── */
+    .player-cards-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .pc-mini {
+      flex: 1;
+      min-width: 160px;
+      border-radius: 10px;
+      overflow: hidden;
+      border-top: 4px solid var(--navy);
+    }
+    .pc-mini-body {
+      background: var(--navy);
+      padding: 14px 14px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .pc-mini-photo {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: rgba(255,255,255,0.15);
+      border: 2px solid rgba(255,255,255,0.2);
+      margin-bottom: 10px;
+    }
+    .pc-mini-name {
+      font-size: 14px; font-weight: 800;
+      color: #fff; line-height: 1.2;
+      margin-bottom: 2px;
+    }
+    .pc-mini-sub {
+      font-size: 10px; color: rgba(255,255,255,0.6);
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .pc-mini-rows {
+      background: var(--bg2);
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-top: none;
+      border-radius: 0 0 10px 10px;
+    }
+    .pc-mini-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 11px;
+    }
+    .pc-mini-row:last-child { border-bottom: none; }
+    .pc-mini-lbl { color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; }
+    .pc-mini-val { font-weight: 700; color: var(--text); }
+    .pc-mini-stats {
+      background: var(--bg);
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-top: none;
+      display: flex;
+      justify-content: space-around;
+    }
+    .pc-mini-stat { text-align: center; }
+    .pc-mini-stat-val { font-size: 18px; font-weight: 800; color: var(--navy); }
+    .pc-mini-stat-lbl { font-size: 9px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+    /* ── Grid: radar + percentiles ── */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+      align-items: start;
+      min-width: 0;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .card-head {
+      padding: 10px 16px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1.5px;
+      color: var(--muted);
+      border-radius: 8px 8px 0 0;
+    }
+    .card-head span { color: var(--navy); margin-right: 4px; }
+    .card-body { padding: 20px; }
+
+    /* ── Radar ── */
+    #radarCanvas { display: block; margin: 0 auto; max-width: 100%; }
+    .radar-legend {
+      display: flex; flex-wrap: wrap; gap: 10px;
+      justify-content: center;
+      margin-top: 14px;
+    }
+    .legend-item {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 11px; font-weight: 700; color: var(--text);
+    }
+    .legend-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+    }
+
+    /* ── Percentile comparison ── */
+    .pct-section .card-body { padding: 14px 16px; }
+    .pct-cmp-row {
+      margin-bottom: 10px;
+    }
+    .pct-cmp-label {
+      font-size: 10px; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+    .pct-cmp-bars { display: flex; flex-direction: column; gap: 3px; }
+    .pct-cmp-bar-row {
+      display: flex; align-items: center; gap: 6px;
+    }
+    .pct-cmp-name {
+      font-size: 9px; font-weight: 700;
+      width: 50px; flex-shrink: 0;
+      color: var(--muted);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .pct-cmp-track {
+      flex: 1; height: 5px;
+      background: var(--border); border-radius: 3px;
+      overflow: hidden;
+    }
+    .pct-cmp-fill {
+      height: 100%; border-radius: 3px;
+      transition: width 0.7s cubic-bezier(0.4,0,0.2,1);
+    }
+    .pct-cmp-val {
+      font-size: 10px; font-weight: 700;
+      width: 24px; text-align: right; flex-shrink: 0;
+    }
+
+    /* ── Stats table ── */
+    .stats-section { min-width: 0; }
+    .stats-tabs {
+      display: flex; gap: 0;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+      padding: 0 16px;
+    }
+    .stats-tab {
+      padding: 10px 16px; font-size: 12px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1px;
+      color: var(--muted); background: none; border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer; transition: all 0.15s;
+      margin-bottom: -1px;
+      font-family: 'Libre Franklin', sans-serif;
+    }
+    .stats-tab.active { color: var(--navy); border-bottom-color: var(--gold); }
+    .stats-tab:hover:not(.active) { color: var(--navy); }
+
+    .stats-table-wrap {
+      overflow-x: scroll;
+      -webkit-overflow-scrolling: touch;
+    }
+    .stats-table-wrap::-webkit-scrollbar { height: 8px; background: #e8eef2; }
+    .stats-table-wrap::-webkit-scrollbar-thumb { background: var(--navy); border-radius: 4px; }
+    .stats-table-wrap::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+
+    .stats-table {
+      border-collapse: collapse;
+      font-size: 12px;
+      white-space: nowrap;
+      min-width: 100%;
+    }
+    .stats-table thead th {
+      padding: 9px 12px;
+      font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.8px;
+      color: var(--muted);
+      border-bottom: 2px solid var(--border);
+      text-align: right;
+      background: var(--bg);
+      position: sticky; top: 0;
+    }
+    .stats-table thead th.stat-col { text-align: left; }
+    .stats-table tbody td {
+      padding: 9px 12px;
+      border-bottom: 1px solid var(--border);
+      text-align: right;
+      color: var(--text);
+    }
+    .stats-table tbody td.stat-col {
+      font-size: 10px; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.5px;
+      text-align: left;
+      background: var(--bg);
+      position: sticky; left: 0;
+    }
+    .stats-table tbody tr:last-child td { border-bottom: none; }
+    .stats-table .best {
+      font-weight: 800;
+      border-radius: 3px;
+    }
+    /* player name header color dots */
+    .player-th {
+      text-align: center !important;
+    }
+    .player-th-inner {
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+    }
+    .player-th-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      display: inline-block;
+    }
+    .player-th-name {
+      font-size: 10px; font-weight: 700; color: var(--text);
+      max-width: 90px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .stats-table tbody td.p-val { text-align: center; }
+
+    /* ── Responsive ── */
+    @media (max-width: 800px) {
+      .compare-grid { grid-template-columns: 1fr; }
+      .slot { width: 100%; }
+      .add-slot-btn { width: 100%; }
+      .selector-row { flex-direction: column; }
+      .share-btn { margin-left: 0; }
+      .player-cards-row { flex-direction: column; }
+      .pc-mini { min-width: unset; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav class="nav">
+  <a class="nav-logo" href="https://gaussianhoops.com">Gaussian<span>Hoops</span></a>
+  <a class="nav-link" href="https://gaussianhoops.com/college/ranking">Ranking</a>
+  <a class="nav-link" href="https://gaussianhoops.com/college/player-search">Player Search</a>
+  <a class="nav-link" href="https://gaussianhoops.com/college/similar-players">Similar Players</a>
+  <a class="nav-link active" href="#">Compare</a>
+</nav>
+
+<div class="page-wrapper">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="page-title">Player Comparison</div>
+    <div class="page-subtitle">Select 2–5 players to compare stats, percentile rankings, and radar profiles.</div>
+  </div>
+
+  <!-- Selector row -->
+  <div class="selector-row" id="selectorRow">
+    <!-- slots injected by JS -->
+    <button class="add-slot-btn" id="addSlotBtn" onclick="addSlot()" style="display:none;">
+      ＋ Add Player
+    </button>
+    <button class="share-btn" id="shareBtn" onclick="shareComparison()" style="display:none;">
+      ⎘ Share
+    </button>
+  </div>
+
+  <!-- Empty state -->
+  <div class="empty-state" id="emptyState">
+    <div class="empty-icon">📊</div>
+    <h2>Compare Players</h2>
+    <p>Search for at least 2 players to start the comparison.</p>
+  </div>
+
+  <!-- Compare content -->
+  <div class="compare-content" id="compareContent">
+
+    <!-- Mini player cards -->
+    <div class="player-cards-row" id="playerCardsRow"></div>
+
+    <!-- Radar + Percentile grid -->
+    <div class="compare-grid">
+      <div class="card">
+        <div class="card-head"><span>◆</span> Radar Comparison</div>
+        <div class="card-body" style="padding:16px 12px 12px;">
+          <canvas id="radarCanvas" width="300" height="300"></canvas>
+          <div class="radar-legend" id="radarLegend"></div>
+        </div>
+      </div>
+      <div class="card pct-section">
+        <div class="card-head"><span>◆</span> Percentile Rankings</div>
+        <div class="card-body">
+          <div id="pctComparison"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats table -->
+    <div class="card stats-section">
+      <div class="stats-tabs">
+        <button class="stats-tab active" onclick="switchTab(this,'pg')">Per Game</button>
+        <button class="stats-tab" onclick="switchTab(this,'adv')">Advanced</button>
+      </div>
+      <div class="stats-table-wrap">
+        <div id="statsTableContainer"></div>
+      </div>
+    </div>
+
+  </div><!-- /compare-content -->
+</div><!-- /page-wrapper -->
+
+<script>
+// ── DATA ────────────────────────────────────────────────────────────────────
+const PLAYERS = [];
+
+// ── CONFIG ──────────────────────────────────────────────────────────────────
+const MAX_PLAYERS = 5;
+const COLORS = ['#04446C','#EBA044','#2A9D8F','#E63946','#7B2D8B'];
+const COLOR_ALPHA = ['rgba(4,68,108,0.25)','rgba(235,160,68,0.25)','rgba(42,157,143,0.25)','rgba(230,57,70,0.25)','rgba(123,45,139,0.25)'];
+
+const CLASSMAP = {FR:'Freshman',SO:'Sophomore',JR:'Junior',SR:'Senior','1':'Freshman','2':'Sophomore','3':'Junior','4':'Senior'};
+
+// ── STATE ────────────────────────────────────────────────────────────────────
+let slots = [null, null]; // start with 2 empty slots
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  loadFromURL();
+  renderSlots();
+});
+
+// ── URL PARAMS ───────────────────────────────────────────────────────────────
+function loadFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  const names = params.getAll('p');
+  if (names.length >= 2) {
+    slots = [];
+    names.slice(0, MAX_PLAYERS).forEach(name => {
+      const p = PLAYERS.find(x => x.name === name);
+      slots.push(p || null);
+    });
+    // ensure at least 2 slots
+    while (slots.length < 2) slots.push(null);
+  }
+}
+
+function updateURL() {
+  const filled = slots.filter(Boolean);
+  const params = new URLSearchParams();
+  filled.forEach(p => params.append('p', p.name));
+  const newURL = window.location.pathname + (filled.length ? '?' + params.toString() : '');
+  window.history.replaceState({}, '', newURL);
+}
+
+// ── SLOTS ────────────────────────────────────────────────────────────────────
+function addSlot() {
+  if (slots.length >= MAX_PLAYERS) return;
+  slots.push(null);
+  renderSlots();
+}
+
+function removeSlot(idx) {
+  slots.splice(idx, 1);
+  if (slots.length < 2) slots.push(null);
+  updateURL();
+  renderSlots();
+  renderAll();
+}
+
+function removePlayer(idx) {
+  slots[idx] = null;
+  updateURL();
+  renderSlots();
+  renderAll();
+}
+
+function renderSlots() {
+  const row = document.getElementById('selectorRow');
+  const addBtn = document.getElementById('addSlotBtn');
+  const shareBtn = document.getElementById('shareBtn');
+
+  // remove existing slot elements
+  row.querySelectorAll('.slot').forEach(el => el.remove());
+
+  slots.forEach((player, idx) => {
+    const color = COLORS[idx];
+    const slot = document.createElement('div');
+    slot.className = 'slot';
+    slot.id = `slot-${idx}`;
+
+    if (player) {
+      // filled slot
+      const photoUrl = player.player_id
+        ? `https://a.espncdn.com/i/headshots/mens-college-basketball/players/full/${player.player_id}.png`
+        : '';
+      slot.innerHTML = `
+        <div class="slot-color-bar" style="background:${color};"></div>
+        <div class="slot-inner">
+          <div class="slot-filled">
+            ${photoUrl
+              ? `<img class="slot-photo" src="${photoUrl}" onerror="this.style.display='none'" alt="">`
+              : `<div class="slot-photo" style="background:${color}20;"></div>`}
+            <div class="slot-info">
+              <div class="slot-name">${player.name}</div>
+              <div class="slot-sub">${player.abbr || player.full_name} · ${player.pos_group}</div>
+            </div>
+            <button class="slot-remove" onclick="removePlayer(${idx})" title="Remove">×</button>
+          </div>
+        </div>`;
+    } else {
+      // empty slot — search input
+      slot.innerHTML = `
+        <div class="slot-color-bar" style="background:${color};"></div>
+        <div class="slot-inner">
+          <div class="slot-empty">
+            <span style="color:${color};font-size:16px;">⊕</span>
+            <input class="slot-search" type="text" placeholder="Search player…"
+              oninput="onSearch(this.value,${idx})"
+              onfocus="onSearchFocus(${idx})"
+              onblur="onSearchBlur(${idx})"
+              autocomplete="off">
+          </div>
+          <div class="slot-dropdown" id="dd-${idx}"></div>
+        </div>`;
+    }
+
+    row.insertBefore(slot, addBtn);
+  });
+
+  // show/hide add button
+  addBtn.style.display = slots.length < MAX_PLAYERS ? 'flex' : 'none';
+
+  // show share button only if 2+ players selected
+  const filledCount = slots.filter(Boolean).length;
+  shareBtn.style.display = filledCount >= 2 ? 'flex' : 'none';
+}
+
+// ── SEARCH ───────────────────────────────────────────────────────────────────
+let searchTimers = {};
+
+function onSearch(query, idx) {
+  clearTimeout(searchTimers[idx]);
+  searchTimers[idx] = setTimeout(() => showDropdown(query, idx), 80);
+}
+
+function onSearchFocus(idx) {
+  const input = document.querySelector(`#slot-${idx} .slot-search`);
+  if (input) showDropdown(input.value, idx);
+}
+
+function onSearchBlur(idx) {
+  setTimeout(() => {
+    const dd = document.getElementById(`dd-${idx}`);
+    if (dd) dd.classList.remove('open');
+  }, 200);
+}
+
+function showDropdown(query, idx) {
+  const dd = document.getElementById(`dd-${idx}`);
+  if (!dd) return;
+
+  const q = query.trim().toLowerCase();
+  const alreadySelected = new Set(slots.filter(Boolean).map(p => p.name));
+
+  let results = q.length === 0
+    ? PLAYERS.slice(0, 12)
+    : PLAYERS.filter(p => p.name.toLowerCase().includes(q)).slice(0, 12);
+
+  results = results.filter(p => !alreadySelected.has(p.name));
+
+  if (results.length === 0) {
+    dd.classList.remove('open');
+    return;
+  }
+
+  dd.innerHTML = results.map(p => {
+    const photo = p.player_id
+      ? `<img class="dd-photo" src="https://a.espncdn.com/i/headshots/mens-college-basketball/players/full/${p.player_id}.png" onerror="this.style.display='none'" alt="">`
+      : `<div class="dd-photo" style="background:var(--border);"></div>`;
+    return `
+      <div class="dd-item" onmousedown="selectPlayer('${p.name.replace(/'/g,"\\'")}',${idx})">
+        ${photo}
+        <div>
+          <div class="dd-name">${p.name}</div>
+          <div class="dd-sub">${p.full_name} · ${p.pos_group}</div>
+        </div>
+      </div>`;
+  }).join('');
+
+  dd.classList.add('open');
+}
+
+function selectPlayer(name, idx) {
+  const p = PLAYERS.find(x => x.name === name);
+  if (!p) return;
+  slots[idx] = p;
+  updateURL();
+  renderSlots();
+  renderAll();
+}
+
+// ── RENDER ALL ───────────────────────────────────────────────────────────────
+function renderAll() {
+  const filled = slots.filter(Boolean);
+  const content = document.getElementById('compareContent');
+  const empty   = document.getElementById('emptyState');
+
+  if (filled.length < 2) {
+    content.classList.remove('visible');
+    empty.style.display = 'block';
+    return;
+  }
+
+  empty.style.display = 'none';
+  content.classList.add('visible');
+
+  renderPlayerCards(filled);
+  renderRadar(filled);
+  renderPercentiles(filled);
+  renderStatsTable(filled);
+}
+
+// ── PLAYER CARDS ─────────────────────────────────────────────────────────────
+function renderPlayerCards(players) {
+  const row = document.getElementById('playerCardsRow');
+  row.innerHTML = players.map((p, i) => {
+    const color = COLORS[i];
+    const photo = p.player_id
+      ? `<img class="pc-mini-photo" src="https://a.espncdn.com/i/headshots/mens-college-basketball/players/full/${p.player_id}.png" onerror="this.src=''" alt="">`
+      : `<div class="pc-mini-photo"></div>`;
+
+    const rows = [
+      ['Conf', p.conference],
+      ['Class', CLASSMAP[p.class] || p.class || '—'],
+      ['Tier', p.tier || '—'],
+      ['Role', p.role || '—'],
+      ['Style', p.arch || '—'],
+    ].map(([l,v]) => `
+      <div class="pc-mini-row">
+        <span class="pc-mini-lbl">${l}</span>
+        <span class="pc-mini-val">${v}</span>
+      </div>`).join('');
+
+    return `
+      <div class="pc-mini" style="border-top-color:${color};">
+        <div class="pc-mini-body" style="background:${color};">
+          ${photo}
+          <div class="pc-mini-name">${p.name}</div>
+          <div class="pc-mini-sub">${p.full_name} · ${p.pos_group}</div>
+        </div>
+        <div class="pc-mini-rows">${rows}</div>
+        <div class="pc-mini-stats">
+          ${[['ppg','PPG'],['rpg','RPG'],['apg','APG']].map(([k,l]) => `
+            <div class="pc-mini-stat">
+              <div class="pc-mini-stat-val" style="color:${color};">${p[k]?.toFixed(1) ?? '—'}</div>
+              <div class="pc-mini-stat-lbl">${l}</div>
+            </div>`).join('')}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// ── RADAR ─────────────────────────────────────────────────────────────────────
+const RADAR_KEYS   = ['ppg_pctile','ts_pctile','per_pctile','ast_pct_pctile','tov_pct_pctile','rpg_pctile','blk_pct_pctile'];
+const RADAR_LABELS = ['PPG','TS%','PER','AST%','TOV%','RPG','BLK%'];
+
+function renderRadar(players) {
+  const canvas = document.getElementById('radarCanvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  const cx = W/2, cy = H/2, maxR = Math.min(W,H)/2 - 36;
+  const n = RADAR_KEYS.length;
+
+  function angle(i) { return (Math.PI * 2 * i / n) - Math.PI/2; }
+  function point(r, i) {
+    return [cx + r * Math.cos(angle(i)), cy + r * Math.sin(angle(i))];
+  }
+
+  // grid rings
+  [20,40,60,80,100].forEach(pct => {
+    const r = pct/100 * maxR;
+    ctx.beginPath();
+    for (let i=0; i<n; i++) {
+      const [x,y] = point(r,i);
+      i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+    }
+    ctx.closePath();
+    ctx.strokeStyle = pct===50 ? 'rgba(235,160,68,0.5)' : 'rgba(0,0,0,0.10)';
+    ctx.lineWidth = pct===50 ? 1.5 : 1;
+    ctx.stroke();
+  });
+
+  // axes
+  for (let i=0; i<n; i++) {
+    const [x,y] = point(maxR, i);
+    ctx.beginPath();
+    ctx.moveTo(cx,cy); ctx.lineTo(x,y);
+    ctx.strokeStyle = 'rgba(0,0,0,0.08)';
+    ctx.lineWidth = 1; ctx.stroke();
+  }
+
+  // labels
+  ctx.font = '11px Libre Franklin, sans-serif';
+  for (let i=0; i<n; i++) {
+    const [x,y] = point(maxR+16, i);
+    const label = RADAR_LABELS[i];
+    ctx.fillStyle = 'rgba(0,0,0,0.45)';
+    ctx.textAlign = x < cx-2 ? 'right' : x > cx+2 ? 'left' : 'center';
+    ctx.textBaseline = y < cy-2 ? 'bottom' : y > cy+2 ? 'top' : 'middle';
+    ctx.fillText(label, x, y);
+  }
+
+  // player polygons (draw in reverse so first player is on top)
+  [...players].reverse().forEach((p, ri) => {
+    const i = players.length - 1 - ri;
+    const color = COLORS[i];
+    const alpha = COLOR_ALPHA[i];
+    const vals = RADAR_KEYS.map(k => p[k] ?? 0);
+
+    ctx.beginPath();
+    vals.forEach((v,j) => {
+      const r = (v/100) * maxR;
+      const [x,y] = point(r,j);
+      j===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+    });
+    ctx.closePath();
+    ctx.fillStyle = alpha; ctx.fill();
+    ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.stroke();
+
+    // dots
+    vals.forEach((v,j) => {
+      const r = (v/100) * maxR;
+      const [x,y] = point(r,j);
+      ctx.beginPath();
+      ctx.arc(x,y,3,0,Math.PI*2);
+      ctx.fillStyle = color; ctx.fill();
+    });
+  });
+
+  // legend
+  const legend = document.getElementById('radarLegend');
+  legend.innerHTML = players.map((p,i) => `
+    <div class="legend-item">
+      <div class="legend-dot" style="background:${COLORS[i]};"></div>
+      ${p.name.split(' ').pop()}
+    </div>`).join('');
+}
+
+// ── PERCENTILES ──────────────────────────────────────────────────────────────
+const PCT_ROWS = [
+  ['ppg_pctile',      'PPG'],
+  ['rpg_pctile',      'RPG'],
+  ['apg_pctile',      'APG'],
+  ['ts_pctile',       'TS%'],
+  ['per_pctile',      'PER'],
+  ['usg_pctile',      'USG%'],
+  ['ast_pct_pctile',  'AST%'],
+  ['trb_pct_pctile',  'REB%'],
+  ['stl_pct_pctile',  'STL%'],
+  ['blk_pct_pctile',  'BLK%'],
+  ['fg3_pct_pctile',  '3FG%'],
+  ['ft_pct_pctile',   'FT%'],
+];
+
+function renderPercentiles(players) {
+  const container = document.getElementById('pctComparison');
+  container.innerHTML = PCT_ROWS.map(([key, label]) => {
+    const bars = players.map((p, i) => {
+      const val = p[key] ?? null;
+      const pct = val ?? 0;
+      const color = COLORS[i];
+      const lastName = p.name.split(' ').pop();
+      return `
+        <div class="pct-cmp-bar-row">
+          <div class="pct-cmp-name">${lastName}</div>
+          <div class="pct-cmp-track">
+            <div class="pct-cmp-fill" style="width:${pct}%;background:${color};"></div>
+          </div>
+          <div class="pct-cmp-val" style="color:${color};">${val !== null ? Math.round(val) : '—'}</div>
+        </div>`;
+    }).join('');
+
+    return `
+      <div class="pct-cmp-row">
+        <div class="pct-cmp-label">${label}</div>
+        <div class="pct-cmp-bars">${bars}</div>
+      </div>`;
+  }).join('');
+}
+
+// ── STATS TABLE ──────────────────────────────────────────────────────────────
+const STATS_PG = [
+  ['gp',     'GP',      v => v],
+  ['mpg',    'MPG',     v => v?.toFixed(1)],
+  ['ppg',    'PPG',     v => v?.toFixed(1)],
+  ['rpg',    'RPG',     v => v?.toFixed(1)],
+  ['apg',    'APG',     v => v?.toFixed(1)],
+  ['spg',    'STL',     v => v?.toFixed(1)],
+  ['bpg',    'BLK',     v => v?.toFixed(1)],
+  ['tov',    'TOV',     v => v?.toFixed(1)],
+  ['fg_pct', 'FG%',     v => v != null ? (v*100).toFixed(1) : null],
+  ['fg3_pct','3P%',     v => v != null ? (v*100).toFixed(1) : null],
+  ['ft_pct', 'FT%',     v => v != null ? (v*100).toFixed(1) : null],
+  ['ts_pct', 'TS%',     v => v != null ? (v*100).toFixed(1) : null],
+];
+
+const STATS_ADV = [
+  ['gp',       'GP',    v => v],
+  ['mpg',      'MPG',   v => v?.toFixed(1)],
+  ['per',      'PER',   v => v?.toFixed(1)],
+  ['ts_pct',   'TS%',   v => v != null ? (v*100).toFixed(1) : null],
+  ['usg_pct',  'USG%',  v => v?.toFixed(1)],
+  ['ast_pct',  'AST%',  v => v?.toFixed(1)],
+  ['tov_pct',  'TOV%',  v => v?.toFixed(1)],
+  ['stl_pct',  'STL%',  v => v?.toFixed(1)],
+  ['blk_pct',  'BLK%',  v => v?.toFixed(1)],
+  ['trb_pct',  'REB%',  v => v?.toFixed(1)],
+  ['orb_pct',  'ORB%',  v => v?.toFixed(1)],
+  ['fg3a_tr',  '3PAR',  v => v?.toFixed(1)],
+  ['ftr',      'FTR',   v => v?.toFixed(2)],
+  ['ast_to',   'AST/TO',v => v?.toFixed(2)],
+];
+
+// stats where LOWER is better (for best-value highlighting)
+const LOWER_IS_BETTER = new Set(['tov','tov_pct']);
+
+let currentTab = 'pg';
+
+function switchTab(btn, tab) {
+  currentTab = tab;
+  document.querySelectorAll('.stats-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const filled = slots.filter(Boolean);
+  if (filled.length >= 2) renderStatsTable(filled);
+}
+
+function renderStatsTable(players) {
+  const defs = currentTab === 'pg' ? STATS_PG : STATS_ADV;
+  const container = document.getElementById('statsTableContainer');
+
+  // header
+  const playerHeaders = players.map((p,i) => `
+    <th class="player-th">
+      <div class="player-th-inner">
+        <span class="player-th-dot" style="background:${COLORS[i]};"></span>
+        <span class="player-th-name">${p.name.split(' ').pop()}</span>
+      </div>
+    </th>`).join('');
+
+  // rows
+  const rows = defs.map(([key, label, fmt]) => {
+    const vals = players.map(p => {
+      const raw = p[key];
+      return raw == null ? null : parseFloat(fmt(raw));
+    });
+
+    const validVals = vals.filter(v => v !== null);
+    const bestVal = validVals.length
+      ? (LOWER_IS_BETTER.has(key) ? Math.min(...validVals) : Math.max(...validVals))
+      : null;
+
+    const cells = vals.map((v, i) => {
+      const display = v !== null ? v : '—';
+      const isBest = v !== null && v === bestVal && validVals.length > 1;
+      return `<td class="p-val${isBest ? ' best' : ''}" style="${isBest ? `color:${COLORS[i]};` : ''}">${display}</td>`;
+    }).join('');
+
+    return `<tr><td class="stat-col">${label}</td>${cells}</tr>`;
+  }).join('');
+
+  container.innerHTML = `
+    <table class="stats-table">
+      <thead>
+        <tr>
+          <th class="stat-col">Stat</th>
+          ${playerHeaders}
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+
+// ── SHARE ────────────────────────────────────────────────────────────────────
+function shareComparison() {
+  const url = window.location.href;
+  navigator.clipboard.writeText(url).then(() => {
+    const btn = document.getElementById('shareBtn');
+    btn.textContent = '✓ Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.innerHTML = '⎘ Share';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+
+// ── KICK OFF ──────────────────────────────────────────────────────────────────
+renderAll();
+</script>
+</body>
+</html>
