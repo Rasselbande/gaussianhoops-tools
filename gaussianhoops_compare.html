@@ -791,8 +791,8 @@ function renderPlayerCards(players) {
 }
 
 // ── RADAR ─────────────────────────────────────────────────────────────────────
-const RADAR_KEYS   = ['ppg_pctile','ts_pctile','per_pctile','ast_pct_pctile','tov_pct_pctile','rpg_pctile','blk_pct_pctile'];
-const RADAR_LABELS = ['PPG','TS%','PER','AST%','TOV%','RPG','BLK%'];
+const RADAR_KEYS   = ['ppg_pctile','rpg_pctile','ast_to_pctile','ts_pctile','usg_pctile','per_pctile'];
+const RADAR_LABELS = ['PPG','RPG','AST/TO','TS%','USG%','PER'];
 
 function renderRadar(players) {
   const canvas = document.getElementById('radarCanvas');

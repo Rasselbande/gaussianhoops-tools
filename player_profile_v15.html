@@ -134,81 +134,94 @@ body {
 
 /* ── PLAYER CARD (vertical sidebar) ── */
 .player-card {
-  background: var(--navy);
   border-radius: 10px;
   overflow: hidden;
   position: sticky;
   top: 80px;
+  border-top: 4px solid var(--navy);
 }
 
+/* ── top: navy section ── */
 .pc-photo-wrap {
-  padding: 22px 20px 16px;
+  background: var(--navy);
+  padding: 22px 20px 18px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  border-bottom: 1px solid rgba(255,255,255,0.12);
 }
 .pc-photo {
-  width: 120px; height: 120px;
-  border-radius: 8px;
+  width: 88px; height: 88px;
+  border-radius: 50%;
   overflow: hidden;
-  background: rgba(255,255,255,0.1);
-  border: 2px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.15);
+  border: 2px solid rgba(255,255,255,0.25);
   display: flex; align-items: flex-end; justify-content: center;
   margin-bottom: 12px;
+  flex-shrink: 0;
 }
-.pc-photo img { width: 100%; height: auto; object-fit: cover; object-position: top center; display: block; }
-.pc-photo-placeholder { font-size: 38px; opacity: 0.2; padding-bottom: 2px; }
+.pc-photo img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
+.pc-photo-placeholder { font-size: 32px; opacity: 0.2; padding-bottom: 2px; }
 
 .pc-name {
-  font-size: 17px; font-weight: 800;
+  font-size: 16px; font-weight: 800;
   color: #fff; text-align: center; line-height: 1.2;
   margin-bottom: 4px;
 }
 .pc-sub {
-  font-size: 11px; font-weight: 600;
-  color: rgba(255,255,255,0.42);
+  font-size: 10px; font-weight: 600;
+  color: rgba(255,255,255,0.5);
   text-transform: uppercase; letter-spacing: 0.9px;
   text-align: center;
 }
 
+/* ── middle: white info rows ── */
 .pc-info {
-  padding: 14px 18px;
-  display: flex; flex-direction: column; gap: 9px;
-  border-bottom: 1px solid rgba(255,255,255,0.12);
+  background: var(--bg2);
+  padding: 10px 14px;
+  display: flex; flex-direction: column;
+  border: 1px solid var(--border);
+  border-top: none;
 }
 .pc-row {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--border);
   gap: 8px;
 }
+.pc-row:last-child { border-bottom: none; }
 .pc-label {
-  font-size: 10px; font-weight: 600;
-  color: rgba(255,255,255,0.38);
-  text-transform: uppercase; letter-spacing: 0.8px;
+  font-size: 10px; font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.5px;
   flex-shrink: 0;
 }
 .pc-value {
-  font-size: 13px; font-weight: 700;
-  color: #fff; text-align: right;
+  font-size: 12px; font-weight: 700;
+  color: var(--text); text-align: right;
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 
+/* ── bottom: stats ── */
 .pc-stats {
-  padding: 14px 18px;
+  background: var(--bg);
+  padding: 12px 14px;
   display: flex;
   justify-content: space-around;
   align-items: center;
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 10px 10px;
 }
 .pc-stat { display: flex; flex-direction: column; align-items: center; gap: 2px; }
 .pc-stat-val {
-  font-size: 24px; font-weight: 800;
-  color: var(--gold); line-height: 1;
+  font-size: 22px; font-weight: 800;
+  color: var(--navy); line-height: 1;
 }
 .pc-stat-lbl {
-  font-size: 10px; font-weight: 700;
-  color: rgba(255,255,255,0.42);
+  font-size: 9px; font-weight: 700;
+  color: var(--muted);
   text-transform: uppercase; letter-spacing: 1.2px;
 }
 
