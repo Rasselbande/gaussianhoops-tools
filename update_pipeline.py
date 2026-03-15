@@ -460,11 +460,11 @@ def run_export(script_name, db_path, season):
         'export_reb_leaderboard.py': 'gaussianhoops_reb_leaderboard.html',
         'export_3pt_leaderboard.py': 'gaussianhoops_3pt_leaderboard.html',
         'export_compare.py':         'gaussianhoops_compare.html',
-        'export_v15.py':             'player_profile_v15.html',
+        'export_v16.py':             'player_profile_v16.html',
     }
     template_files = {
         'export_compare.py': 'gaussianhoops_compare_template.html',
-        'export_v15.py':     'player_profile_v15_template.html',
+        'export_v16.py':     'player_profile_v16_template.html',
     }
 
     ns = {
@@ -508,7 +508,7 @@ def run_exports(db_path, season):
         'export_reb_leaderboard.py',
         'export_3pt_leaderboard.py',
         'export_compare.py',
-        'export_v15.py',
+        'export_v16.py',
     ]
     for script in exports:
         run_export(script, db_path, season)
@@ -571,7 +571,7 @@ def main():
     print("  gaussianhoops_reb_leaderboard.html")
     print("  gaussianhoops_3pt_leaderboard.html")
     print("  gaussianhoops_compare.html")
-    print("  player_profile_v15.html")
+    print("  player_profile_v16.html")
 
 if __name__ == '__main__':
     main()

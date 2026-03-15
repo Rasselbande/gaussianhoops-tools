@@ -197,7 +197,7 @@ function render(){
   document.getElementById('tbody').innerHTML=slice.map((p,i)=>{
     const gi=start+i+1;
     const top3=gi<=3;
-    const profileUrl='player_profile_v15.html?player='+encodeURIComponent(p.name);
+    const profileUrl='player_profile_v16.html?player='+encodeURIComponent(p.name);
     return '<tr style="cursor:pointer"><td><div class="rank-bar-wrap"><span class="rank-cell'+(top3?' rank-top':'')+'">'+p.rank.toFixed(1)+'</span><div class="rank-bar"><div class="rank-fill" style="width:'+p.rank+'%"></div></div></div></td>'
       +'<td><a href="'+profileUrl+'" style="color:inherit;text-decoration:none;"><span class="player-name">'+p.name+'</span></a>'+(p.portal===1?'<span class="badge b-portal">PORTAL</span>':'')+'</td>'
       +'<td>'+p.cls+'</td><td>'+p.ht+'</td>'
