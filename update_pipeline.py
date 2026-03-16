@@ -226,6 +226,13 @@ METRICS = [
     ("stl_pct", "stl_pct_pctile",  True),
     ("blk_pct", "blk_pct_pctile",  True),
     ("fg3a",    "fg3a_pctile",     True),
+    # New metrics
+    ("mpg",     "mpg_pctile",      True),
+    ("ortg",    "ortg_pctile",     True),
+    ("drtg",    "drtg_pctile",     False),
+    ("ftr",     "ftr_pctile",      True),
+    ("fg_pct",  "fg_pct_pctile",   True),
+    ("orb",     "orb_pctile",      True),
 ]
 
 NEW_COLS = ["qualified"] + [m[1] for m in METRICS] + ["rpg_vs_avg"]

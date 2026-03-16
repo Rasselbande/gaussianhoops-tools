@@ -60,6 +60,9 @@ df = pd.read_sql(f"""
         s.fg3_pct_pctile, s.fg3a_tr_pctile, s.fg3a_pctile,
         s.ft_pct_pctile, s.trb_pct_pctile, s.orb_pct_pctile,
         s.stl_pct_pctile, s.blk_pct_pctile,
+        s.tov_pctile,
+        s.mpg_pctile, s.ortg_pctile, s.drtg_pctile,
+        s.ftr_pctile, s.fg_pct_pctile, s.orb_pctile,
         s.rpg_vs_avg
     FROM stats s
     JOIN players p ON s.player_id = p.id
@@ -164,6 +167,13 @@ def row_to_player(r):
         'orb_pct_pctile': safe(r['orb_pct_pctile']),
         'stl_pct_pctile': safe(r['stl_pct_pctile']),
         'blk_pct_pctile': safe(r['blk_pct_pctile']),
+        'tov_pctile':     safe(r['tov_pctile']),
+        'mpg_pctile':     safe(r['mpg_pctile']),
+        'ortg_pctile':    safe(r['ortg_pctile']),
+        'drtg_pctile':    safe(r['drtg_pctile']),
+        'ftr_pctile':     safe(r['ftr_pctile']),
+        'fg_pct_pctile':  safe(r['fg_pct_pctile']),
+        'orb_pctile':     safe(r['orb_pctile']),
         'rpg_vs_avg':     safe(r['rpg_vs_avg']),
         'role':           r['role'] if has_role else None,
         'arch':           r['arch'] if has_role else None,
