@@ -52,6 +52,7 @@ df = pd.read_sql(f"""
         s.ts_pct, s.efg_pct, s.orb_pct, s.drb_pct, s.trb_pct,
         s.ast_pct, s.tov_pct, s.stl_pct, s.blk_pct,
         s.usg_pct, s.per, s.ast_to, s.qualified,
+        s.ortg, s.drtg, s.orb,
         s.ppg_pctile, s.rpg_pctile, s.apg_pctile,
         s.spg_pctile, s.bpg_pctile,
         s.ts_pctile, s.per_pctile, s.usg_pctile,
@@ -65,6 +66,23 @@ df = pd.read_sql(f"""
     JOIN teams   t ON s.team_id   = t.id
     WHERE s.season = '{SEASON}'
     ORDER BY s.ppg DESC
+""", conn)
+# ── Seasons history (all seasons for players in current season) ─────────────
+df_hist = pd.read_sql(f"""
+    SELECT p.name, s.season, s.gp, s.mpg,
+           s.ppg, s.rpg, s.apg, s.spg, s.bpg, s.tov, s.pf,
+           s.fgm, s.fga, s.fg_pct, s.fg3m, s.fg3a, s.fg3_pct, s.fg3a_tr,
+           s.ftm, s.fta, s.ft_pct, s.ftr,
+           s.ts_pct, s.orb_pct, s.trb_pct, s.ast_pct, s.tov_pct,
+           s.stl_pct, s.blk_pct, s.usg_pct, s.per, s.ortg, s.drtg, s.orb
+    FROM stats s
+    JOIN players p ON s.player_id = p.id
+    WHERE p.name IN (
+        SELECT DISTINCT p2.name FROM stats s2
+        JOIN players p2 ON s2.player_id = p2.id
+        WHERE s2.season = '{SEASON}'
+    )
+    ORDER BY p.name, s.season ASC
 """, conn)
 conn.close()
 
@@ -124,6 +142,9 @@ def row_to_player(r):
         'ft_pct':         safe(r['ft_pct']),
         'ftr':            safe(r['ftr']),
         'ast_to':         safe(r['ast_to']),
+        'ortg':           safe(r['ortg']),
+        'drtg':           safe(r['drtg']),
+        'orb':            safe(r['orb']),
         'ppg_pctile':     safe(r['ppg_pctile']),
         'rpg_pctile':     safe(r['rpg_pctile']),
         'apg_pctile':     safe(r['apg_pctile']),
@@ -149,6 +170,35 @@ def row_to_player(r):
     }
 
 players_list = [row_to_player(r) for _, r in df.iterrows()]
+
+# ── Build seasons history map ───────────────────────────────────────────────
+seasons_map = {}
+for _, r in df_hist.iterrows():
+    name = r['name']
+    if name not in seasons_map:
+        seasons_map[name] = []
+    seasons_map[name].append({
+        'season':  r['season'],
+        'gp':      None if pd.isna(r['gp']) else int(r['gp']),
+        'mpg':     safe(r['mpg']),   'ppg':     safe(r['ppg']),
+        'fgm':     safe(r['fgm']),   'fga':     safe(r['fga']),   'fg_pct':  safe(r['fg_pct']),
+        'fg3m':    safe(r['fg3m']),  'fg3a':    safe(r['fg3a']),  'fg3_pct': safe(r['fg3_pct']),
+        'ftm':     safe(r['ftm']),   'fta':     safe(r['fta']),   'ft_pct':  safe(r['ft_pct']),
+        'rpg':     safe(r['rpg']),   'apg':     safe(r['apg']),   'spg':     safe(r['spg']),
+        'bpg':     safe(r['bpg']),   'pf':      safe(r['pf']),    'tov':     safe(r['tov']),
+        'ts_pct':  safe(r['ts_pct']),'fg3a_tr': safe(r['fg3a_tr']),
+        'orb_pct': safe(r['orb_pct']),'trb_pct':safe(r['trb_pct']),
+        'ast_pct': safe(r['ast_pct']),'tov_pct':safe(r['tov_pct']),
+        'stl_pct': safe(r['stl_pct']),'blk_pct':safe(r['blk_pct']),
+        'usg_pct': safe(r['usg_pct']),'per':    safe(r['per']),
+        'ftr':     safe(r['ftr']),   'ortg':    safe(r['ortg']),  'drtg':    safe(r['drtg']),
+        'orb':     safe(r['orb']),
+    })
+
+# Add seasons (last 5, oldest first = newest at bottom of table)
+for p in players_list:
+    p['seasons'] = seasons_map.get(p['name'], [])[-5:]
+
 print(f"Mit Headshot:     {sum(1 for p in players_list if p['player_id'])}")
 
 # Verifikation

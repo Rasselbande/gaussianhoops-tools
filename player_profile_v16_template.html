@@ -552,18 +552,47 @@ const PCTILE_COL = {
 };
 
 
+/* ── Stat metadata: labels + format functions for box display ── */
+const STAT_META = {
+  ppg:     { label:'PPG',    fmt: v => v?.toFixed(1) },
+  mpg:     { label:'MPG',    fmt: v => v?.toFixed(1) },
+  per:     { label:'PER',    fmt: v => v?.toFixed(1) },
+  usg_pct: { label:'USG%',   fmt: v => v?.toFixed(1) },
+  ortg:    { label:'ORtg',   fmt: v => v?.toFixed(1) },
+  ts_pct:  { label:'TS%',    fmt: v => v != null ? (v*100).toFixed(1) : null },
+  fg_pct:  { label:'FG%',    fmt: v => v != null ? (v*100).toFixed(1) : null },
+  fg3_pct: { label:'3FG%',   fmt: v => v != null ? (v*100).toFixed(1) : null },
+  fg3a_tr: { label:'3PR',    fmt: v => v?.toFixed(1) },
+  ft_pct:  { label:'FT%',    fmt: v => v != null ? (v*100).toFixed(1) : null },
+  ftr:     { label:'FTR',    fmt: v => v?.toFixed(2) },
+  apg:     { label:'APG',    fmt: v => v?.toFixed(1) },
+  ast_pct: { label:'AST%',   fmt: v => v?.toFixed(1) },
+  tov:     { label:'TOV',    fmt: v => v?.toFixed(1) },
+  tov_pct: { label:'TOV%',   fmt: v => v?.toFixed(1) },
+  ast_to:  { label:'AST/TO', fmt: v => v?.toFixed(2) },
+  rpg:     { label:'RPG',    fmt: v => v?.toFixed(1) },
+  trb_pct: { label:'REB%',   fmt: v => v?.toFixed(1) },
+  orb:     { label:'ORB',    fmt: v => v?.toFixed(1) },
+  orb_pct: { label:'ORB%',   fmt: v => v?.toFixed(1) },
+  spg:     { label:'SPG',    fmt: v => v?.toFixed(1) },
+  stl_pct: { label:'STL%',   fmt: v => v?.toFixed(1) },
+  bpg:     { label:'BLK',    fmt: v => v?.toFixed(1) },
+  blk_pct: { label:'BLK%',   fmt: v => v?.toFixed(1) },
+  drtg:    { label:'DRtg',   fmt: v => v?.toFixed(1) },
+};
+
 /* ── Percentile Box Definitions ── */
 const BOX_DEFS = {
   overall:    { label: 'Overall Impact', icon: '◈', cls: 'pct-box--overall',
-                keys: ['per','ppg','usg_pct'] },
+                keys: ['ppg','mpg','per','usg_pct','ortg'] },
   shooting:   { label: 'Shooting',       icon: '◎', cls: 'pct-box--shooting',
-                keys: ['ts_pct','fg3_pct','ft_pct','fg3a_tr'] },
+                keys: ['ts_pct','fg_pct','fg3_pct','fg3a_tr','ft_pct','ftr'] },
   playmaking: { label: 'Playmaking',     icon: '◉', cls: 'pct-box--playmaking',
-                keys: ['apg','ast_pct','ast_to','tov_pct'] },
+                keys: ['apg','ast_pct','tov','tov_pct','ast_to'] },
   rebounding: { label: 'Rebounding',     icon: '▣', cls: 'pct-box--rebounding',
-                keys: ['rpg','trb_pct','orb_pct'] },
+                keys: ['rpg','trb_pct','orb','orb_pct'] },
   defense:    { label: 'Defense',        icon: '◆', cls: 'pct-box--defense',
-                keys: ['stl_pct','blk_pct','spg','bpg'] },
+                keys: ['spg','stl_pct','bpg','blk_pct','drtg'] },
 };
 
 // which boxes to show per position group
@@ -679,40 +708,42 @@ function renderProfile(p) {
   const fPct = v => v != null ? (v * 100).toFixed(1) : '—';
   const fMA = (m, a) => (m != null && a != null) ? `${f1(m)} - ${f1(a)}` : '—';
 
-  const statsRowsPG = `<tr>
-    <td class="season-col left">${p.season || '—'}</td>
-    <td>${p.gp ?? '—'}</td>
-    <td>${f1(p.mpg)}</td>
-    <td>${fMA(p.fgm, p.fga)}</td>
-    <td>${fPct(p.fg_pct)}</td>
-    <td>${fMA(p.fg3m, p.fg3a)}</td>
-    <td>${fPct(p.fg3_pct)}</td>
-    <td>${fMA(p.ftm, p.fta)}</td>
-    <td>${fPct(p.ft_pct)}</td>
-    <td>${f1(p.rpg)}</td>
-    <td>${f1(p.apg)}</td>
-    <td>${f1(p.spg)}</td>
-    <td>${f1(p.bpg)}</td>
-    <td>${f1(p.pf)}</td>
-    <td>${f1(p.tov)}</td>
-    <td><strong>${f1(p.ppg)}</strong></td>
-  </tr>`;
+  const _pgSeasons = (p.seasons && p.seasons.length > 0) ? p.seasons : [p];
+  const statsRowsPG = _pgSeasons.map(s => `<tr>
+    <td class="season-col left">${s.season || '—'}</td>
+    <td>${s.gp ?? '—'}</td>
+    <td>${f1(s.mpg)}</td>
+    <td>${fMA(s.fgm, s.fga)}</td>
+    <td>${fPct(s.fg_pct)}</td>
+    <td>${fMA(s.fg3m, s.fg3a)}</td>
+    <td>${fPct(s.fg3_pct)}</td>
+    <td>${fMA(s.ftm, s.fta)}</td>
+    <td>${fPct(s.ft_pct)}</td>
+    <td>${f1(s.rpg)}</td>
+    <td>${f1(s.apg)}</td>
+    <td>${f1(s.spg)}</td>
+    <td>${f1(s.bpg)}</td>
+    <td>${f1(s.pf)}</td>
+    <td>${f1(s.tov)}</td>
+    <td><strong>${f1(s.ppg)}</strong></td>
+  </tr>`).join('');
 
-  const statsRowsAdv = `<tr>
-    <td class="season-col left">${p.season || '—'}</td>
-    <td>${p.gp ?? '—'}</td>
-    <td>${p.ts_pct != null ? p.ts_pct.toFixed(3) : '—'}</td>
-    <td>${fmtNum(p.fg3a_tr)}</td>
-    <td>${fmtNum(p.orb_pct)}</td>
-    <td>${fmtNum(p.trb_pct)}</td>
-    <td>${fmtNum(p.ast_pct)}</td>
-    <td>${fmtNum(p.tov_pct)}</td>
-    <td>${fmtNum(p.stl_pct)}</td>
-    <td>${fmtNum(p.blk_pct)}</td>
-    <td>${fmtNum(p.usg_pct)}</td>
-    <td>${fmtNum(p.ftr)}</td>
-    <td>${fmtNum(p.per)}</td>
-  </tr>`;
+  const _advSeasons = (p.seasons && p.seasons.length > 0) ? p.seasons : [p];
+  const statsRowsAdv = _advSeasons.map(s => `<tr>
+    <td class="season-col left">${s.season || '—'}</td>
+    <td>${s.gp ?? '—'}</td>
+    <td>${s.ts_pct != null ? s.ts_pct.toFixed(3) : '—'}</td>
+    <td>${fmtNum(s.fg3a_tr)}</td>
+    <td>${fmtNum(s.orb_pct)}</td>
+    <td>${fmtNum(s.trb_pct)}</td>
+    <td>${fmtNum(s.ast_pct)}</td>
+    <td>${fmtNum(s.tov_pct)}</td>
+    <td>${fmtNum(s.stl_pct)}</td>
+    <td>${fmtNum(s.blk_pct)}</td>
+    <td>${fmtNum(s.usg_pct)}</td>
+    <td>${fmtNum(s.ftr)}</td>
+    <td>${fmtNum(s.per)}</td>
+  </tr>`).join('');
 
   const radarVals = radarKeys.map(k => {
     const col = PCTILE_COL[k];
@@ -839,13 +870,9 @@ function buildPctBoxes(p, pg, qualified) {
     const rows = def.keys.map(k => {
       const pctCol = PCTILE_COL[k];
       const pct    = (qualified && pctCol) ? p[pctCol] : null;
-      // find label+fmt from TABLE_DEF
-      const allDefs = [...(TABLE_DEF.GUARD||[]),...(TABLE_DEF.WING||[]),...(TABLE_DEF.FORWARD||[]),...(TABLE_DEF.BIG||[])];
-      const found = allDefs.find(([dk]) => dk === k);
-      const label = found ? found[1] : k.toUpperCase();
-      const fmt   = found ? found[2] : (v => v?.toFixed(1));
-      const raw   = p[k] != null ? fmt(p[k]) : null;
-      return { label, raw, pct };
+      const meta   = STAT_META[k] || { label: k.toUpperCase(), fmt: v => v?.toFixed(1) };
+      const raw    = p[k] != null ? meta.fmt(p[k]) : null;
+      return { label: meta.label, raw, pct };
     });
     const rowsHtml = rows.map(r => pctRow(r)).join('');
     return `
