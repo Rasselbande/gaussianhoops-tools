@@ -430,7 +430,7 @@ function sortByTab(col){
 
 function render(){
   const start=(page-1)*PER,end=start+PER,slice=filtered.slice(start,end);
-  const profileBase='player_profile_v16.html?player=';
+  const profileBase='player_profile_v17.html?player=';
 
   document.getElementById('tbody').innerHTML=slice.map((p,i)=>{
     const gi=start+i+1;
