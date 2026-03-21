@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gaussian Hoops – Top 10 Rankings</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #ffffff;
+    color: #1a2e4a;
+    padding: 0;
+  }
+
+  .widget {
+    width: 100%;
+    border: 1px solid #e8edf3;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 16px rgba(26,46,74,0.08);
+  }
+
+  /* ── Header ── */
+  .widget-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    background: #1a2e4a;
+    color: #fff;
+  }
+  .widget-header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .widget-title {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .badge-season {
+    font-size: 11px;
+    font-weight: 600;
+    background: rgba(232,160,32,0.25);
+    color: #f0b930;
+    border: 1px solid rgba(240,185,48,0.4);
+    padding: 2px 8px;
+    border-radius: 20px;
+    letter-spacing: 0.3px;
+  }
+  .badge-live {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.6);
+  }
+  .badge-live::before {
+    content: '';
+    display: inline-block;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #4caf50;
+    box-shadow: 0 0 4px #4caf50;
+  }
+
+  /* ── Column headers ── */
+  .col-headers {
+    display: grid;
+    grid-template-columns: 36px 1fr 60px 32px 46px 46px 46px 56px;
+    padding: 6px 16px;
+    background: #f5f7fa;
+    border-bottom: 1px solid #e8edf3;
+    gap: 4px;
+  }
+  .col-headers span {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: #8a9bb0;
+    text-align: right;
+  }
+  .col-headers span:nth-child(1),
+  .col-headers span:nth-child(2) {
+    text-align: left;
+  }
+
+  /* ── Rows ── */
+  .player-row {
+    display: grid;
+    grid-template-columns: 36px 1fr 60px 32px 46px 46px 46px 56px;
+    padding: 9px 16px;
+    align-items: center;
+    border-bottom: 1px solid #f0f3f7;
+    gap: 4px;
+    transition: background 0.15s;
+    cursor: default;
+  }
+  .player-row:last-child { border-bottom: none; }
+  .player-row:hover { background: #f8fafd; }
+
+  /* Rank badge */
+  .rank-num {
+    font-size: 13px;
+    font-weight: 700;
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .rank-1 { background: #fff3cd; color: #9a6c00; }
+  .rank-2 { background: #f0f0f0; color: #555; }
+  .rank-3 { background: #fce8d8; color: #9a4500; }
+  .rank-other { background: transparent; color: #8a9bb0; font-size: 12px; }
+
+  /* Player name */
+  .player-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1a2e4a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Team */
+  .player-team {
+    font-size: 12px;
+    font-weight: 600;
+    color: #1a2e4a;
+    text-align: right;
+  }
+
+  /* Class */
+  .player-cls {
+    font-size: 11px;
+    color: #8a9bb0;
+    text-align: right;
+    font-weight: 500;
+  }
+
+  /* Stats */
+  .stat {
+    font-size: 12px;
+    font-weight: 500;
+    color: #3a5070;
+    text-align: right;
+  }
+
+  /* Score */
+  .score-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+  }
+  .score-val {
+    font-size: 12px;
+    font-weight: 700;
+    color: #1a2e4a;
+  }
+  .score-bar-bg {
+    width: 40px;
+    height: 3px;
+    background: #e8edf3;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .score-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: linear-gradient(90deg, #e8a020, #f0c040);
+  }
+
+  /* ── Footer ── */
+  .widget-footer {
+    padding: 11px 20px;
+    background: #f5f7fa;
+    border-top: 1px solid #e8edf3;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer-label {
+    font-size: 11px;
+    color: #8a9bb0;
+    font-weight: 500;
+  }
+  .footer-link {
+    font-size: 12px;
+    font-weight: 600;
+    color: #1a2e4a;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: color 0.15s;
+  }
+  .footer-link:hover { color: #e8a020; }
+  .footer-link svg { width: 14px; height: 14px; }
+</style>
+</head>
+<body>
+
+<div class="widget">
+
+  <div class="widget-header">
+    <div class="widget-header-left">
+      <span class="widget-title">NCAA Rankings</span>
+      <span class="badge-season">25 / 26</span>
+    </div>
+    <span class="badge-live">Data updated</span>
+  </div>
+
+  <div class="col-headers">
+    <span>#</span>
+    <span>Player</span>
+    <span>Team</span>
+    <span>Cls</span>
+    <span>PPG</span>
+    <span>RPG</span>
+    <span>APG</span>
+    <span>Score</span>
+  </div>
+
+  <div id="players-container"></div>
+
+  <div class="widget-footer">
+    <span class="footer-label">Powered by Gaussian Hoops · gaussianhoops.com</span>
+    <a href="https://gaussianhoops.com/college" class="footer-link" target="_blank">
+      View all rankings
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 8h10M9 4l4 4-4 4"/>
+      </svg>
+    </a>
+  </div>
+
+</div>
+
+<script>
+const TOP10 = [{"rank": 1, "name": "Cameron Boozer", "team": "DUKE", "cls": "Fr", "pos": "F", "ht": "6-9", "ppg": 22.5, "rpg": 10.2, "apg": 4.2, "score": 100.0, "role": "Impact Player", "conf": "ACC"}, {"rank": 2, "name": "J.T. Toppin", "team": "TXTCH", "cls": "Jr", "pos": "F", "ht": "6-9", "ppg": 21.8, "rpg": 10.8, "apg": 2.1, "score": 100.0, "role": "Impact Player", "conf": "B12"}, {"rank": 3, "name": "Caleb Wilson", "team": "UNC", "cls": "Fr", "pos": "F", "ht": "6-9", "ppg": 19.8, "rpg": 9.4, "apg": 2.7, "score": 99.9, "role": "Impact Player", "conf": "ACC"}, {"rank": 4, "name": "Hannes Steinbach", "team": "UWASH", "cls": "Fr", "pos": "F", "ht": "6-11", "ppg": 18.5, "rpg": 11.8, "apg": 1.6, "score": 99.9, "role": "Impact Player", "conf": "B10"}, {"rank": 5, "name": "A.J. Dybantsa", "team": "BYU", "cls": "Fr", "pos": "GF", "ht": "6-9", "ppg": 25.3, "rpg": 6.7, "apg": 3.8, "score": 99.9, "role": "Impact Player", "conf": "B12"}, {"rank": 6, "name": "Zuby Ejiofor", "team": "STJ", "cls": "Sr", "pos": "F", "ht": "6-9", "ppg": 16.3, "rpg": 7.1, "apg": 3.5, "score": 99.8, "role": "Impact Player", "conf": "Big East"}, {"rank": 7, "name": "Bruce Thornton", "team": "OSU", "cls": "Sr", "pos": "G", "ht": "6-2", "ppg": 20.2, "rpg": 5.1, "apg": 3.8, "score": 99.8, "role": "Impact Player", "conf": "B10"}, {"rank": 8, "name": "Nick Martinelli", "team": "NWU", "cls": "Sr", "pos": "F", "ht": "6-7", "ppg": 23.0, "rpg": 6.2, "apg": 2.0, "score": 99.8, "role": "Impact Player", "conf": "B10"}, {"rank": 9, "name": "Ebuka Okorie", "team": "STAN", "cls": "Fr", "pos": "PG", "ht": "6-2", "ppg": 22.8, "rpg": 3.7, "apg": 3.5, "score": 99.7, "role": "Impact Player", "conf": "ACC"}, {"rank": 10, "name": "Dailyn Swain", "team": "TEXAS", "cls": "Jr", "pos": "SF", "ht": "6-8", "ppg": 17.8, "rpg": 7.6, "apg": 3.4, "score": 99.7, "role": "Impact Player", "conf": "SEC"}];
+
+const container = document.getElementById('players-container');
+
+TOP10.forEach(p => {
+  const rankClass = p.rank <= 3 ? `rank-${p.rank}` : 'rank-other';
+  const barWidth = Math.round((p.score / 100) * 100);
+
+  const row = document.createElement('div');
+  row.className = 'player-row';
+  row.innerHTML = `
+    <div class="rank-num ${rankClass}">${p.rank}</div>
+    <div class="player-name">${p.name}</div>
+    <div class="player-team">${p.team}</div>
+    <div class="player-cls">${p.cls}</div>
+    <div class="stat">${p.ppg}</div>
+    <div class="stat">${p.rpg}</div>
+    <div class="stat">${p.apg}</div>
+    <div class="score-cell">
+      <span class="score-val">${p.score}</span>
+      <div class="score-bar-bg"><div class="score-bar-fill" style="width:${barWidth}%"></div></div>
+    </div>
+  `;
+  container.appendChild(row);
+});
+</script>
+
+</body>
+</html>
