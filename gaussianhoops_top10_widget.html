@@ -207,6 +207,17 @@
   }
   .footer-link:hover { color: #e8a020; }
   .footer-link svg { width: 14px; height: 14px; }
+
+  /* ── Mobile: hide less important columns ── */
+  @media (max-width: 560px) {
+    .col-headers,
+    .player-row {
+      grid-template-columns: 28px 1fr 46px 52px;
+    }
+    .hide-mobile { display: none; }
+    .player-name { font-size: 12px; }
+    .score-val   { font-size: 11px; }
+  }
 </style>
 </head>
 <body>
@@ -224,11 +235,11 @@
   <div class="col-headers">
     <span>#</span>
     <span>Player</span>
-    <span>Team</span>
-    <span>Cls</span>
+    <span class="hide-mobile">Team</span>
+    <span class="hide-mobile">Cls</span>
     <span>PPG</span>
-    <span>RPG</span>
-    <span>APG</span>
+    <span class="hide-mobile">RPG</span>
+    <span class="hide-mobile">APG</span>
     <span>Score</span>
   </div>
 
@@ -260,11 +271,11 @@ TOP10.forEach(p => {
   row.innerHTML = `
     <div class="rank-num ${rankClass}">${p.rank}</div>
     <div class="player-name">${p.name}</div>
-    <div class="player-team">${p.team}</div>
-    <div class="player-cls">${p.cls}</div>
+    <div class="player-team hide-mobile">${p.team}</div>
+    <div class="player-cls hide-mobile">${p.cls}</div>
     <div class="stat">${p.ppg}</div>
-    <div class="stat">${p.rpg}</div>
-    <div class="stat">${p.apg}</div>
+    <div class="stat hide-mobile">${p.rpg}</div>
+    <div class="stat hide-mobile">${p.apg}</div>
     <div class="score-cell">
       <span class="score-val">${p.score}</span>
       <div class="score-bar-bg"><div class="score-bar-fill" style="width:${barWidth}%"></div></div>
