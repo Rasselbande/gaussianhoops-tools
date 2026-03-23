@@ -379,17 +379,17 @@ body {
 }
 .stats-table {
   width: 100%; border-collapse: collapse;
-  font-size: 13px; white-space: nowrap;
+  font-size: 11px; white-space: nowrap;
 }
 .stats-table thead th {
-  padding: 8px 12px; text-align: right;
-  font-size: 10px; font-weight: 700; letter-spacing: 0.8px;
+  padding: 6px 8px; text-align: right;
+  font-size: 9px; font-weight: 700; letter-spacing: 0.8px;
   text-transform: uppercase; color: var(--muted);
   background: var(--bg); border-bottom: 1px solid var(--border);
 }
 .stats-table thead th.left { text-align: left; }
 .stats-table tbody td {
-  padding: 9px 12px; text-align: right;
+  padding: 7px 8px; text-align: right;
   border-bottom: 1px solid var(--border);
   color: var(--text);
 }
@@ -779,6 +779,7 @@ function renderProfile(p) {
   const _pgSeasons = (p.seasons && p.seasons.length > 0) ? p.seasons : [p];
   const statsRowsPG = _pgSeasons.map(s => `<tr>
     <td class="season-col left">${s.season || '—'}</td>
+    <td class="left" style="font-weight:600;color:var(--navy)">${s.team || '—'}</td>
     <td>${s.gp ?? '—'}</td>
     <td>${f1(s.mpg)}</td>
     <td>${fMA(s.fgm, s.fga)}</td>
@@ -799,6 +800,7 @@ function renderProfile(p) {
   const _advSeasons = (p.seasons && p.seasons.length > 0) ? p.seasons : [p];
   const statsRowsAdv = _advSeasons.map(s => `<tr>
     <td class="season-col left">${s.season || '—'}</td>
+    <td class="left" style="font-weight:600;color:var(--navy)">${s.team || '—'}</td>
     <td>${s.gp ?? '—'}</td>
     <td>${s.ts_pct != null ? s.ts_pct.toFixed(3) : '—'}</td>
     <td>${fmtNum(s.fg3a_tr)}</td>
@@ -870,7 +872,7 @@ function renderProfile(p) {
             <div class="tab-panel active" id="tab-pg">
               <table class="stats-table">
                 <thead><tr>
-                  <th class="left">Season</th><th>GP</th><th>MPG</th>
+                  <th class="left">Season</th><th class="left">Team</th><th>GP</th><th>MPG</th>
                   <th>FGM-FGA</th><th>FG%</th><th>3PM-3PA</th><th>3P%</th>
                   <th>FTM-FTA</th><th>FT%</th><th>REB</th><th>APG</th>
                   <th>STL</th><th>BLK</th><th>PF</th><th>TOV</th><th>PTS</th>
@@ -881,7 +883,7 @@ function renderProfile(p) {
             <div class="tab-panel" id="tab-adv">
               <table class="stats-table">
                 <thead><tr>
-                  <th class="left">Season</th><th>GP</th><th>TS%</th><th>3PAR</th>
+                  <th class="left">Season</th><th class="left">Team</th><th>GP</th><th>TS%</th><th>3PAR</th>
                   <th>ORB%</th><th>REB%</th><th>AST%</th><th>TOV%</th>
                   <th>STL%</th><th>BLK%</th><th>USG%</th><th>FTR</th><th>PER</th>
                 </tr></thead>

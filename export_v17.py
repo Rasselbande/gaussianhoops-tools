@@ -97,7 +97,7 @@ df = pd.read_sql(f"""
 """, conn)
 # ── Seasons history (all seasons for players in current season) ─────────────
 df_hist = pd.read_sql(f"""
-    SELECT p.name, s.season, s.gp, s.mpg,
+    SELECT p.name, s.season, t.abbr AS team, s.gp, s.mpg,
            s.ppg, s.rpg, s.apg, s.spg, s.bpg, s.tov, s.pf,
            s.fgm, s.fga, s.fg_pct, s.fg3m, s.fg3a, s.fg3_pct, s.fg3a_tr,
            s.ftm, s.fta, s.ft_pct, s.ftr,
@@ -105,6 +105,7 @@ df_hist = pd.read_sql(f"""
            s.stl_pct, s.blk_pct, s.usg_pct, s.per, s.ortg, s.drtg, s.orb
     FROM stats s
     JOIN players p ON s.player_id = p.id
+    JOIN teams   t ON s.team_id   = t.id
     WHERE p.name IN (
         SELECT DISTINCT p2.name FROM stats s2
         JOIN players p2 ON s2.player_id = p2.id
@@ -241,6 +242,7 @@ for _, r in df_hist.iterrows():
         seasons_map[name] = []
     seasons_map[name].append({
         'season':  r['season'],
+        'team':    r['team'] if pd.notna(r.get('team')) else None,
         'gp':      None if pd.isna(r['gp']) else int(r['gp']),
         'mpg':     safe(r['mpg']),   'ppg':     safe(r['ppg']),
         'fgm':     safe(r['fgm']),   'fga':     safe(r['fga']),   'fg_pct':  safe(r['fg_pct']),
