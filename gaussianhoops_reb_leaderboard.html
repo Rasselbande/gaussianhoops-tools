@@ -67,6 +67,7 @@
     .hs-fallback{width:32px;height:32px;border-radius:50%;background:var(--blue-lt);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--blue);flex-shrink:0}
     .player-name{font-weight:700;color:inherit}
     .player-name:hover{color:var(--blue);text-decoration:underline}
+    .player-school{font-size:10px;color:var(--muted);font-weight:500;margin-top:2px;letter-spacing:0.2px}
     .badge{font-size:9px;font-weight:600;padding:2px 6px;white-space:nowrap;display:inline-block;margin-left:4px}
     .b-pos{background:var(--gold-lt);color:var(--gold);border:1px solid var(--gold-md)}
     .b-portal{background:#e8f8ee;color:#1a7a3c;border:1px solid #a8dbb8;font-weight:700}
@@ -253,8 +254,6 @@
             <th onclick="sortBy('name')"                id="th-name"              >Player<span class="sa">&#8597;</span></th>
             <th onclick="sortBy('cls')"                 id="th-cls"               >Cls<span class="sa">&#8597;</span></th>
             <th onclick="sortBy('posGrp')"              id="th-posGrp"            >Pos<span class="sa">&#8597;</span></th>
-            <th onclick="sortBy('team')"                id="th-team"              >Team<span class="sa">&#8597;</span></th>
-            <th onclick="sortBy('conf')"                id="th-conf"              >Conf<span class="sa">&#8597;</span></th>
             <th onclick="sortBy('tier')"                id="th-tier"              >Tier<span class="sa">&#8597;</span></th>
             <th onclick="sortBy('rpg')"    class="num"  id="th-rpg"   style="color:#fff">RPG<span class="sa">&#8597;</span></th>
             <th onclick="sortBy('orb')"    class="num"  id="th-orb"              >ORB<span class="sa">&#8597;</span></th>
@@ -431,13 +430,14 @@ function render(){
       +'<td onclick="event.stopPropagation()">'
         +'<div class="player-cell">'
           +headshot(p)
-          +'<a href="'+profileUrl+'" style="text-decoration:none;"><span class="player-name">'+p.name+'</span></a>'+(p.portal===1?'<span class="badge b-portal">PORTAL</span>':'')
+          +'<div>'
+          +'<div><a href="'+profileUrl+'" style="text-decoration:none;"><span class="player-name">'+p.name+'</span></a>'+(p.portal===1?'<span class="badge b-portal">PORTAL</span>':'')+'</div>'
+          +'<span class="player-school">'+p.team+' · '+p.conf+'</span>'
+          +'</div>'
         +'</div>'
       +'</td>'
       +'<td>'+p.cls+'</td>'
       +'<td><span class="badge b-pos">'+(p.posGrp||p.pos||'—')+'</span></td>'
-      +'<td>'+p.team+'</td>'
-      +'<td>'+p.conf+'</td>'
       +'<td>'+tierBadge(p.tier)+'</td>'
       +'<td class="num" style="font-weight:700;color:var(--blue)">'+p.rpg.toFixed(1)+'</td>'
       +'<td class="num">'+p.orb.toFixed(1)+'</td>'

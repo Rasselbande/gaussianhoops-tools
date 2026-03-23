@@ -66,6 +66,7 @@ tbody td.num{text-align:right;font-variant-numeric:tabular-nums}
 .rank-cell{font-size:14px;font-weight:800;color:var(--blue)}
 .rank-top{color:var(--gold)!important}
 .player-name{font-weight:700}
+.player-school{font-size:10px;color:var(--muted);font-weight:500;margin-top:2px;letter-spacing:0.2px}
 .badge{font-size:9px;font-weight:600;padding:2px 6px;white-space:nowrap;display:inline-block;margin-left:4px}
 .b-pos{background:var(--gold-lt);color:var(--gold);border:1px solid var(--gold-md)}
 .b-p5{background:#04446c;color:#fff}
@@ -146,8 +147,6 @@ tbody td.num{text-align:right;font-variant-numeric:tabular-nums}
         <th onclick="sortBy('cls')" id="th-cls">Class <span class="sa">&#8597;</span></th>
         <th onclick="sortBy('ht')" id="th-ht">HT <span class="sa">&#8597;</span></th>
         <th onclick="sortBy('posGrp')" id="th-posGrp">Pos <span class="sa">&#8597;</span></th>
-        <th onclick="sortBy('team')" id="th-team">Team <span class="sa">&#8597;</span></th>
-        <th onclick="sortBy('conf')" id="th-conf">Conf <span class="sa">&#8597;</span></th>
         <th onclick="sortBy('tier')" id="th-tier">Tier <span class="sa">&#8597;</span></th>
         <th onclick="sortBy('role')" id="th-role">Role <span class="sa">&#8597;</span></th>
         <th onclick="sortBy('arch')" id="th-arch">Style <span class="sa">&#8597;</span></th>
@@ -209,10 +208,9 @@ function render(){
     const top3=gi<=3;
     const profileUrl='player_profile_v17.html?player='+encodeURIComponent(p.name);
     return '<tr style="cursor:pointer"><td><div class="rank-bar-wrap"><span class="rank-cell'+(top3?' rank-top':'')+'">'+p.rank.toFixed(1)+'</span><div class="rank-bar"><div class="rank-fill" style="width:'+p.rank+'%"></div></div></div></td>'
-      +'<td><a href="'+profileUrl+'" style="color:inherit;text-decoration:none;"><span class="player-name">'+p.name+'</span></a>'+(p.portal===1?'<span class="badge b-portal">PORTAL</span>':'')+'</td>'
+      +'<td><div><div><a href="'+profileUrl+'" style="color:inherit;text-decoration:none;"><span class="player-name">'+p.name+'</span></a>'+(p.portal===1?'<span class="badge b-portal">PORTAL</span>':'')+'</div><span class="player-school">'+p.team+' · '+p.conf+'</span></div></td>'
       +'<td>'+p.cls+'</td><td>'+p.ht+'</td>'
       +'<td><span class="badge b-pos">'+(p.posGrp||p.pos||'—')+'</span></td>'
-      +'<td>'+p.team+'</td><td>'+p.conf+'</td>'
       +'<td>'+tierBadge(p.tier)+'</td>'
       +'<td>'+p.role+'</td><td>'+p.arch+'</td>'
       +'<td class="num">'+p.mpg.toFixed(1)+'</td>'
