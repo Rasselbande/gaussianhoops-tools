@@ -13,11 +13,19 @@ import pandas as pd
 import numpy as np
 import json
 import re
-from scipy import stats as scipy_stats
+import os
+def minmax_scale(arr):
+    """Scale a 1-D array to [0, 1]. Returns numpy array."""
+    a = np.array(arr, dtype=float)
+    mn, mx = np.nanmin(a), np.nanmax(a)
+    if mx == mn:
+        return np.zeros_like(a)
+    return (a - mn) / (mx - mn)
 
 # ── Pfade ──────────────────────────────────────────────────────────────────
-DB_PATH   = '/Users/phil/Documents/gaussian_hoops/gaussianhoops.db'
-HTML_PATH = '/Users/phil/Documents/gaussian_hoops/gaussianhoops_ncaa_ranking.html'
+_DIR      = os.path.dirname(os.path.abspath(__file__))
+DB_PATH   = os.path.join(_DIR, 'gaussianhoops.db')
+HTML_PATH = os.path.join(_DIR, 'gaussianhoops_ncaa_ranking.html')
 SEASON    = '25-26'
 # ──────────────────────────────────────────────────────────────────────────
 
@@ -30,11 +38,18 @@ player_cols = [r[1] for r in cur.fetchall()]
 has_espn    = 'espn_player_id' in player_cols
 espn_sel    = 'p.espn_player_id,' if has_espn else ''
 
+cur.execute('PRAGMA table_info(stats)')
+stats_cols  = [r[1] for r in cur.fetchall()]
+has_role    = 'role' in stats_cols and 'arch' in stats_cols
+role_sel    = 's.role, s.arch,' if has_role else ''
+print(f"Role/Arch in DB: {'✅' if has_role else '❌  → migrate_role_arch.py ausführen'}")
+
 df = pd.read_sql(f"""
     SELECT
         p.name, p.height, p.pos, p.pos_group,
         t.abbr AS team, t.full_name, t.conference AS conf, t.tier,
         {espn_sel}
+        {role_sel}
         s.season, s.class AS cls,
         s.gp, s.mpg, s.ppg, s.rpg, s.apg, s.spg, s.bpg, s.tov,
         s.fg_pct, s.fg3_pct, s.ft_pct, s.ts_pct, s.efg_pct,
@@ -54,93 +69,70 @@ df = pd.read_sql(f"""
 conn.close()
 print(f"Spieler geladen: {len(df)}")
 
-# ── Composite Rank (0–100) ─────────────────────────────────────────────────
-# Gewichtete Summe aus den wichtigsten Percentile-Spalten
-WEIGHTS = {
-    'per_pctile':      0.25,
-    'ppg_pctile':      0.20,
-    'ts_pctile':       0.15,
-    'tov_pct_pctile':  0.12,
-    'ast_pct_pctile':  0.10,
-    'trb_pct_pctile':  0.08,
-    'stl_pct_pctile':  0.05,
-    'blk_pct_pctile':  0.05,
+# ── ROLE ───────────────────────────────────────────────────────────────────
+# Aus DB lesen (migrate_role_arch.py muss vorher ausgeführt worden sein)
+if not has_role:
+    raise RuntimeError("❌ Spalten 'role'/'arch' fehlen in stats-Tabelle.\n   Bitte zuerst ausführen: python3 migrate_role_arch.py")
+
+# ── CONFERENCE MULTIPLIER ──────────────────────────────────────────────────
+conf_mult = {
+    'Power 5':    1.00,
+    'High-Major': 0.88,
+    'Mid-Major':  0.76,
+    'Low-Major':  0.58,
 }
+df['conf_mult'] = df['tier'].map(conf_mult).fillna(0.58)
 
-pctile_cols = list(WEIGHTS.keys())
-df_pct = df[pctile_cols].copy()
+# ── PRODUCTION (35%) — conference-adjusted stats ───────────────────────────
+df['ppg_adj'] = df['ppg'] * df['conf_mult']
+df['rpg_adj'] = df['rpg'] * df['conf_mult']
+df['apg_adj'] = df['apg'] * df['conf_mult']
+df['mpg_adj'] = df['mpg'] * df['conf_mult']
 
-# Nur Spieler mit ≥ 5 Percentile-Werten bewerten
-has_enough = df_pct.notna().sum(axis=1) >= 5
+df_prod = df[['ppg_adj','rpg_adj','apg_adj','mpg_adj']].fillna(0)
+df['prod_score'] = minmax_scale(df_prod.mean(axis=1).values)
 
-composite = pd.Series(0.0, index=df.index)
-total_w   = pd.Series(0.0, index=df.index)
-for col, w in WEIGHTS.items():
-    mask = df_pct[col].notna()
-    composite[mask] += df_pct[col][mask] * w
-    total_w[mask]   += w
+# ── EFFICIENCY (30%) ───────────────────────────────────────────────────────
+df['ast_to_ratio'] = df['ast_pct'] / (df['tov_pct'] + 0.01)
+df_eff = df[['ts_pct','per','ast_to_ratio']].fillna(0)
+df['eff_score'] = minmax_scale(df_eff.mean(axis=1).values)
 
-composite = np.where(total_w > 0, composite / total_w, np.nan)
-composite = np.where(has_enough, composite, np.nan)
+# ── DEFENSE (15%) ─────────────────────────────────────────────────────────
+df_def = df[['stl_pct','blk_pct','trb_pct']].fillna(0)
+df['def_score'] = minmax_scale(df_def.mean(axis=1).values)
 
-# Auf 0–100 normieren (Percentile-Rank innerhalb aller Spieler)
-valid_mask = ~np.isnan(composite)
-ranks      = np.full(len(composite), np.nan)
-if valid_mask.sum() > 0:
-    pct_ranks = scipy_stats.rankdata(composite[valid_mask], method='average')
-    pct_ranks = (pct_ranks - 1) / (valid_mask.sum() - 1) * 100
-    ranks[valid_mask] = np.round(pct_ranks, 1)
+# ── CONTEXT (20%) ─────────────────────────────────────────────────────────
+role_val = {'Impact Player': 3, 'Role Player': 2, 'Bench': 1}
+tier_val = {'Power 5': 4, 'High-Major': 3, 'Mid-Major': 2, 'Low-Major': 1}
 
-df['rank'] = ranks
+df['role_num'] = df['role'].map(role_val).fillna(1)
+df['tier_num'] = df['tier'].map(tier_val).fillna(1)
+
+df['ctx_score'] = minmax_scale(((df['role_num'] + df['tier_num']) / 2).values)
+
+# ── COMBINED SCORE → RANK (0–100) ─────────────────────────────────────────
+df['raw_score'] = (
+    0.35 * df['prod_score'] +
+    0.30 * df['eff_score']  +
+    0.15 * df['def_score']  +
+    0.20 * df['ctx_score']
+)
+
+df['rank'] = (df['raw_score'].rank(pct=True) * 100).round(1)
 df['rank'] = df['rank'].fillna(0.0)
 
 print(f"Mit Rank-Score: {(df['rank'] > 0).sum()}")
+print("\nScore distribution:")
+print(df['rank'].describe().round(1))
 
-# ── Role (basierend auf Rank) ──────────────────────────────────────────────
-def assign_role(rank):
-    if pd.isna(rank) or rank == 0: return 'Bench'
-    if rank >= 75: return 'Impact Player'
-    if rank >= 40: return 'Role Player'
-    return 'Bench'
-
-df['role'] = df['rank'].apply(assign_role)
-
-# ── Archetype (basierend auf Pos + Stats) ─────────────────────────────────
-def assign_arch(row):
-    pos  = (row.get('pos_group') or '').upper()
-    fg3  = row.get('fg3a_tr') or 0      # 3-point attempt rate
-    ast  = row.get('ast_pct') or 0      # assist pct
-    ast2 = row.get('ast_to') or 0       # ast/to ratio
-    blk  = row.get('blk_pct') or 0      # block pct
-    stl  = row.get('stl_pct') or 0      # steal pct
-    reb  = row.get('trb_pct') or 0      # rebound pct
-
-    if pos == 'GUARD':
-        if ast >= 25 or ast2 >= 1.5: return 'Primary Creator'
-        if fg3 >= 35:                return 'Scoring Guard'
-        if stl >= 2.5:               return 'Two-Way Guard'
-        return 'Scoring Guard'
-    elif pos == 'WING':
-        if fg3 >= 35:                return 'Stretch Wing'
-        if ast >= 20:                return 'Playmaking Wing'
-        if stl >= 2.5 or blk >= 2:  return 'Two-Way Wing'
-        return 'Stretch Wing'
-    elif pos == 'FORWARD':
-        if fg3 >= 30:                return 'Stretch Forward'
-        if reb >= 15:                return 'Power Forward'
-        if ast >= 15:                return 'Playmaking Forward'
-        return 'Stretch Forward'
-    elif pos == 'BIG':
-        if fg3 >= 20:                return 'Stretch Big'
-        if blk >= 3:                 return 'Rim Protector'
-        if reb >= 18:                return 'Rebounding Big'
-        return 'Rim Protector'
-    return 'Role Player'
-
-df['arch'] = df.apply(assign_arch, axis=1)
-
-# ── Portal (nicht in DB → 0) ───────────────────────────────────────────────
-df['portal'] = 0
+# ── Portal: aus portal_list Tabelle laden ──────────────────────────────────
+_conn_p = sqlite3.connect(DB_PATH)
+_portal_names = pd.read_sql(
+    "SELECT name FROM portal_list WHERE season = ?", _conn_p, params=(SEASON,)
+)['name'].tolist()
+_conn_p.close()
+df['portal'] = df['name'].isin(_portal_names).astype(int)
+print(f"Portal-Spieler gefunden: {df['portal'].sum()}")
 
 # ── JSON aufbauen ──────────────────────────────────────────────────────────
 def safe(v):
@@ -214,6 +206,47 @@ with open(HTML_PATH, 'w', encoding='utf-8') as f:
 
 print(f"✅ Gespeichert: {HTML_PATH}")
 print(f"   Dateigröße:  {len(html_new)/1024/1024:.1f} MB")
+
+# ── TOP-10 WIDGET exportieren ───────────────────────────────────────────────
+WIDGET_PATH = os.path.join(_DIR, 'gaussianhoops_top10_widget.html')
+
+top10 = players_list[:10]
+top10_export = []
+for i, p in enumerate(top10, 1):
+    top10_export.append({
+        'rank':  i,
+        'name':  p['name'],
+        'team':  p['team'],
+        'cls':   p['cls'],
+        'pos':   p['pos'],
+        'ht':    p['ht'],
+        'ppg':   p['ppg'],
+        'rpg':   p['rpg'],
+        'apg':   p['apg'],
+        'score': p['rank'],
+        'role':  p['role'],
+        'conf':  p['conf'],
+    })
+
+top10_json = json.dumps(top10_export, ensure_ascii=False)
+
+with open(WIDGET_PATH, 'r', encoding='utf-8') as f:
+    widget_html = f.read()
+
+widget_new = re.sub(
+    r'const TOP10\s*=\s*\[.*?\];',
+    f'const TOP10 = {top10_json};',
+    widget_html,
+    flags=re.DOTALL
+)
+
+with open(WIDGET_PATH, 'w', encoding='utf-8') as f:
+    f.write(widget_new)
+
+print(f"✅ Widget gespeichert: {WIDGET_PATH}")
+print(f"   Top 3: {top10_export[0]['name']}, {top10_export[1]['name']}, {top10_export[2]['name']}")
+
 print("\nNächste Schritte:")
-print("  1. gaussianhoops_ncaa_ranking.html in GitHub hochladen")
-print("  2. Bei DB-Update: python3 export_ranking.py → erneut hochladen")
+print("  1. gaussianhoops_ncaa_ranking.html   → GitHub hochladen")
+print("  2. gaussianhoops_top10_widget.html   → GitHub hochladen (selber Ordner)")
+print("  3. Bei DB-Update: python3 /Users/phil/Documents/gaussian_hoops/export_ranking.py")
