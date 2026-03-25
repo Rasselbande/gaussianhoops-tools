@@ -368,14 +368,15 @@ function render() {
 
     const stiPct = Math.min(p.sti,100);
     const stiCls = stiColor(p.sti);
+    const profileUrl = `player_profile_v17.html?player=${encodeURIComponent(p.name)}`;
 
-    return `<tr>
+    return `<tr style="cursor:pointer" onclick="window.location='${profileUrl}'">
       <td><span class="${rankClass}">${globalRank}</span></td>
-      <td>
+      <td onclick="event.stopPropagation()">
         <div class="player-cell">
           ${img}${fallback}
           <div>
-            <div class="player-name">${p.name}${portalBadge}</div>
+            <div><a href="${profileUrl}" style="text-decoration:none;"><span class="player-name">${p.name}</span></a>${portalBadge}</div>
             <div class="player-school">${p.team} &middot; ${p.conf}</div>
           </div>
         </div>
