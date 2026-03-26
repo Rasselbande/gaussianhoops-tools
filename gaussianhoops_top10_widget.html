@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gaussian Hoops – Top 10 Rankings</title>
+<title>Gaussian Hoops – Top Portal Rankings</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -54,6 +54,17 @@
     border-radius: 20px;
     letter-spacing: 0.3px;
   }
+  .badge-portal {
+    font-size: 10px;
+    font-weight: 700;
+    background: rgba(76,175,80,0.18);
+    color: #66bb6a;
+    border: 1px solid rgba(102,187,106,0.35);
+    padding: 2px 8px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
   .badge-live {
     display: flex;
     align-items: center;
@@ -73,7 +84,7 @@
   /* ── Column headers ── */
   .col-headers {
     display: grid;
-    grid-template-columns: 36px 1fr 60px 32px 46px 46px 46px 56px;
+    grid-template-columns: 36px 1fr 52px 36px 46px 56px;
     padding: 6px 16px;
     background: #f5f7fa;
     border-bottom: 1px solid #e8edf3;
@@ -95,7 +106,7 @@
   /* ── Rows ── */
   .player-row {
     display: grid;
-    grid-template-columns: 36px 1fr 60px 32px 46px 46px 46px 56px;
+    grid-template-columns: 36px 1fr 52px 36px 46px 56px;
     padding: 9px 16px;
     align-items: center;
     border-bottom: 1px solid #f0f3f7;
@@ -134,19 +145,27 @@
 
   /* Team */
   .player-team {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
     color: #1a2e4a;
     text-align: right;
   }
 
-  /* Class */
+  /* Class badge */
   .player-cls {
-    font-size: 11px;
-    color: #8a9bb0;
-    text-align: right;
-    font-weight: 500;
+    font-size: 10px;
+    font-weight: 700;
+    text-align: center;
+    padding: 2px 5px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
   }
+  .cls-fr  { background: #e3f2fd; color: #1565c0; }
+  .cls-so  { background: #e8f5e9; color: #2e7d32; }
+  .cls-jr  { background: #fff8e1; color: #f57f17; }
+  .cls-sr  { background: #fce4ec; color: #ad1457; }
+  .cls-def { background: #f3e5f5; color: #6a1b9a; }
 
   /* Stats */
   .stat {
@@ -208,11 +227,11 @@
   .footer-link:hover { color: #e8a020; }
   .footer-link svg { width: 14px; height: 14px; }
 
-  /* ── Mobile: hide less important columns ── */
+  /* ── Mobile ── */
   @media (max-width: 560px) {
     .col-headers,
     .player-row {
-      grid-template-columns: 28px 1fr 46px 52px;
+      grid-template-columns: 28px 1fr 36px 52px;
     }
     .hide-mobile { display: none; }
     .player-name { font-size: 12px; }
@@ -226,8 +245,9 @@
 
   <div class="widget-header">
     <div class="widget-header-left">
-      <span class="widget-title">NCAA Rankings</span>
+      <span class="widget-title">Top Portal</span>
       <span class="badge-season">25 / 26</span>
+      <span class="badge-portal">Portal</span>
     </div>
     <span class="badge-live">Data updated</span>
   </div>
@@ -238,17 +258,15 @@
     <span class="hide-mobile">Team</span>
     <span class="hide-mobile">Cls</span>
     <span>PPG</span>
-    <span class="hide-mobile">RPG</span>
-    <span class="hide-mobile">APG</span>
     <span>Score</span>
   </div>
 
   <div id="players-container"></div>
 
   <div class="widget-footer">
-    <span class="footer-label">Powered by Gaussian Hoops · gaussianhoops.com</span>
-    <a href="https://gaussianhoops.com/college" class="footer-link" target="_blank">
-      View all rankings
+    <span class="footer-label">Top Portal · Ranked by Gaussian Score</span>
+    <a href="https://gaussianhoops.com/portal" class="footer-link" target="_blank">
+      View all portal
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M3 8h10M9 4l4 4-4 4"/>
       </svg>
@@ -258,13 +276,23 @@
 </div>
 
 <script>
-const TOP10 = [{"rank": 1, "name": "Cameron Boozer", "team": "DUKE", "cls": "Fr", "pos": "F", "ht": "6-9", "ppg": 22.5, "rpg": 10.2, "apg": 4.2, "score": 100.0, "role": "Impact Player", "conf": "ACC"}, {"rank": 2, "name": "J.T. Toppin", "team": "TXTCH", "cls": "Jr", "pos": "F", "ht": "6-9", "ppg": 21.8, "rpg": 10.8, "apg": 2.1, "score": 100.0, "role": "Impact Player", "conf": "B12"}, {"rank": 3, "name": "Caleb Wilson", "team": "UNC", "cls": "Fr", "pos": "F", "ht": "6-9", "ppg": 19.8, "rpg": 9.4, "apg": 2.7, "score": 99.9, "role": "Impact Player", "conf": "ACC"}, {"rank": 4, "name": "Hannes Steinbach", "team": "UWASH", "cls": "Fr", "pos": "F", "ht": "6-11", "ppg": 18.5, "rpg": 11.8, "apg": 1.6, "score": 99.9, "role": "Impact Player", "conf": "B10"}, {"rank": 5, "name": "Zuby Ejiofor", "team": "STJ", "cls": "Sr", "pos": "F", "ht": "6-9", "ppg": 16.3, "rpg": 7.1, "apg": 3.5, "score": 99.9, "role": "Impact Player", "conf": "Big East"}, {"rank": 6, "name": "Bruce Thornton", "team": "OSU", "cls": "Sr", "pos": "G", "ht": "6-2", "ppg": 20.2, "rpg": 5.1, "apg": 3.8, "score": 99.8, "role": "Impact Player", "conf": "B10"}, {"rank": 7, "name": "Nick Martinelli", "team": "NWU", "cls": "Sr", "pos": "F", "ht": "6-7", "ppg": 23.0, "rpg": 6.2, "apg": 2.0, "score": 99.8, "role": "Impact Player", "conf": "B10"}, {"rank": 8, "name": "Joshua Jefferson", "team": "IWAST", "cls": "Sr", "pos": "C", "ht": "6-9", "ppg": 16.9, "rpg": 7.6, "apg": 4.9, "score": 99.8, "role": "Impact Player", "conf": "B12"}, {"rank": 9, "name": "Ebuka Okorie", "team": "STAN", "cls": "Fr", "pos": "PG", "ht": "6-2", "ppg": 22.8, "rpg": 3.7, "apg": 3.5, "score": 99.7, "role": "Impact Player", "conf": "ACC"}, {"rank": 10, "name": "Dailyn Swain", "team": "TEXAS", "cls": "Jr", "pos": "SF", "ht": "6-8", "ppg": 17.8, "rpg": 7.6, "apg": 3.4, "score": 99.7, "role": "Impact Player", "conf": "SEC"}];
+const TOP10 = [{"rank": 1, "name": "Paulius Murauskas", "team": "STMRY", "cls": "Jr", "pos": "F", "ht": "6-8", "ppg": 18.8, "rpg": 7.7, "apg": 2.2, "score": 97.7, "role": "Impact Player", "conf": "WCC"}, {"rank": 2, "name": "K.J. Lewis", "team": "GTOWN", "cls": "Jr", "pos": "G", "ht": "6-4", "ppg": 14.9, "rpg": 5.1, "apg": 2.5, "score": 97.4, "role": "Impact Player", "conf": "Big East"}, {"rank": 3, "name": "KJ Evans, Jr.", "team": "OREG", "cls": "Jr", "pos": "F", "ht": "6-9", "ppg": 13.3, "rpg": 7.4, "apg": 2.0, "score": 97.3, "role": "Role Player", "conf": "B10"}, {"rank": 4, "name": "Colby Garland", "team": "SJSU", "cls": "Jr", "pos": "G", "ht": "6-0", "ppg": 20.3, "rpg": 3.3, "apg": 4.6, "score": 96.9, "role": "Impact Player", "conf": "MWC"}, {"rank": 5, "name": "Jackson Shelstad", "team": "OREG", "cls": "Jr", "pos": "G", "ht": "6-0", "ppg": 15.6, "rpg": 2.9, "apg": 4.9, "score": 94.3, "role": "Role Player", "conf": "B10"}, {"rank": 6, "name": "DeSean Goode", "team": "RMU", "cls": "So", "pos": "F", "ht": "6-8", "ppg": 15.2, "rpg": 8.7, "apg": 1.4, "score": 94.0, "role": "Impact Player", "conf": "Horizon"}, {"rank": 7, "name": "Rikus Schulte", "team": "FORD", "cls": "Jr", "pos": "PF", "ht": "6-9", "ppg": 10.7, "rpg": 9.1, "apg": 1.5, "score": 92.8, "role": "Role Player", "conf": "A-10"}, {"rank": 8, "name": "Corey Hadnot II", "team": "IPFW", "cls": "Jr", "pos": "G", "ht": "6-3", "ppg": 20.4, "rpg": 4.0, "apg": 3.5, "score": 92.4, "role": "Impact Player", "conf": "Horizon"}, {"rank": 9, "name": "Stefan Vaaks", "team": "PROV", "cls": "Fr", "pos": "G", "ht": "6-6", "ppg": 15.8, "rpg": 2.5, "apg": 3.2, "score": 91.3, "role": "Role Player", "conf": "Big East"}, {"rank": 10, "name": "Christian Bliss", "team": "DEL", "cls": "So", "pos": "G", "ht": "6-4", "ppg": 16.7, "rpg": 5.2, "apg": 5.9, "score": 91.1, "role": "Impact Player", "conf": "C-USA"}];
+
+function clsClass(cls) {
+  if (!cls) return 'cls-def';
+  const c = cls.toLowerCase();
+  if (c.startsWith('fr') || c === 'rs-fr') return 'cls-fr';
+  if (c.startsWith('so') || c === 'rs-so') return 'cls-so';
+  if (c.startsWith('jr'))  return 'cls-jr';
+  if (c.startsWith('sr'))  return 'cls-sr';
+  return 'cls-def';
+}
 
 const container = document.getElementById('players-container');
 
 TOP10.forEach(p => {
   const rankClass = p.rank <= 3 ? `rank-${p.rank}` : 'rank-other';
-  const barWidth = Math.round((p.score / 100) * 100);
+  const barWidth  = Math.round((p.score / 100) * 100);
 
   const row = document.createElement('div');
   row.className = 'player-row';
@@ -272,10 +300,8 @@ TOP10.forEach(p => {
     <div class="rank-num ${rankClass}">${p.rank}</div>
     <div class="player-name">${p.name}</div>
     <div class="player-team hide-mobile">${p.team}</div>
-    <div class="player-cls hide-mobile">${p.cls}</div>
+    <div class="player-cls ${clsClass(p.cls)} hide-mobile">${p.cls}</div>
     <div class="stat">${p.ppg}</div>
-    <div class="stat hide-mobile">${p.rpg}</div>
-    <div class="stat hide-mobile">${p.apg}</div>
     <div class="score-cell">
       <span class="score-val">${p.score}</span>
       <div class="score-bar-bg"><div class="score-bar-fill" style="width:${barWidth}%"></div></div>
