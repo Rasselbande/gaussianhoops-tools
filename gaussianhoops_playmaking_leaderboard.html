@@ -336,13 +336,10 @@ function applyFilters(){
 
 function doSort(){
   filtered.sort((a, b) => {
-    let av = sortCol === '_rank' ? (a.pmi || 0) : (a[sortCol] || 0);
-    let bv = sortCol === '_rank' ? (b.pmi || 0) : (b[sortCol] || 0);
-    if(typeof av === 'string') av = av.toLowerCase();
-    if(typeof bv === 'string') bv = bv.toLowerCase();
-    if(av < bv) return sortDir;
-    if(av > bv) return -sortDir;
-    return 0;
+    const av = sortCol === '_rank' ? (a.pmi || 0) : (a[sortCol] || 0);
+    const bv = sortCol === '_rank' ? (b.pmi || 0) : (b[sortCol] || 0);
+    if(typeof av === 'string') return sortDir * av.toLowerCase().localeCompare((bv||'').toLowerCase());
+    return sortDir * ((av || 0) - (bv || 0));
   });
 }
 
