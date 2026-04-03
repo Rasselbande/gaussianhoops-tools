@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NBA Draft Board 2026 | Gaussianhoops</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --blue:#04446c;--blue-lt:#e8f2f8;--blue-md:#c2dcea;
+  --gold:#eba044;--gold-lt:#fdf3e7;--gold-md:#f5c98a;
+  --green:#1a7a4a;--green-lt:#e6f4ed;
+  --white:#fff;--bg:#f9fafb;--text:#1a2b38;--muted:#6b8a9a;
+  --border:#dce8ef;--sh:0 2px 12px rgba(4,68,108,.08)
+}
+html,body{font-family:'Libre Franklin',sans-serif;background:var(--bg);color:var(--text);width:100%;overflow-x:hidden}
+.page-wrap{max-width:1400px;margin:0 auto;padding:16px 12px}
+
+/* ── Header ── */
+.site-header{display:flex;align-items:center;gap:14px;padding:14px 0 18px}
+.site-logo{font-size:18px;font-weight:800;color:var(--blue);letter-spacing:-.5px}
+.site-logo span{color:var(--gold)}
+.header-nav{margin-left:auto;display:flex;gap:18px}
+.header-nav a{font-size:11px;font-weight:600;color:var(--muted);text-decoration:none;text-transform:uppercase;letter-spacing:.6px}
+.header-nav a:hover,.header-nav a.active{color:var(--blue)}
+
+/* ── Cards ── */
+.card{background:var(--white);border:1px solid var(--border);box-shadow:var(--sh);padding:20px;margin-bottom:12px}
+.card-top{border-top:3px solid var(--blue)}
+.intro{border-left:4px solid var(--gold)}
+.intro-title{font-size:13px;font-weight:700;color:var(--blue);margin-bottom:5px}
+.intro-text{font-size:12px;color:var(--muted);line-height:1.65}
+
+/* ── Methodology expander ── */
+.expander{background:var(--blue-lt);border:1px solid var(--blue-md);margin-top:10px}
+.exp-toggle{width:100%;background:none;border:none;padding:11px 14px;text-align:left;font-family:'Libre Franklin',sans-serif;font-size:11px;font-weight:600;color:var(--blue);cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.exp-body{padding:0 14px;max-height:0;overflow:hidden;transition:max-height .35s ease}
+.exp-body.open{max-height:900px;padding:0 14px 14px}
+.exp-body p{font-size:11px;color:var(--muted);line-height:1.7;margin-bottom:6px}
+.exp-body table{width:100%;border-collapse:collapse;margin-top:8px;font-size:11px}
+.exp-body th{background:var(--blue);color:#fff;padding:6px 10px;text-align:left}
+.exp-body td{padding:5px 10px;border-bottom:1px solid var(--border)}
+.metric-badge{display:inline-block;background:var(--blue);color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;margin-right:4px;vertical-align:middle}
+.metric-badge.gold{background:var(--gold)}
+
+/* ── Filter bar ── */
+.filter-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.filter-lbl{font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.fs{height:34px;padding:0 26px 0 9px;border:1.5px solid var(--border);font-family:'Libre Franklin',sans-serif;font-size:11px;color:var(--text);background:var(--white);outline:none;cursor:pointer;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236b8a9a' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center}
+.fs:focus{border-color:var(--blue)}
+.search-wrap{position:relative;flex:1;min-width:160px;max-width:280px}
+.search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+.si{width:100%;height:34px;padding:0 10px 0 30px;border:1.5px solid var(--border);font-family:'Libre Franklin',sans-serif;font-size:11px;color:var(--text);background:var(--white);outline:none}
+.si:focus{border-color:var(--blue)}
+
+/* ── Results bar ── */
+.results-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px}
+.results-title{font-size:14px;font-weight:700;color:var(--blue)}
+.results-count{font-size:11px;color:var(--muted)}
+.sort-note{font-size:10px;color:var(--muted);font-style:italic}
+
+/* ── Table ── */
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:12px;min-width:900px}
+thead th{background:var(--blue);color:#fff;padding:9px 8px;text-align:left;white-space:nowrap;font-size:11px;font-weight:600;cursor:pointer;user-select:none;position:sticky;top:0;z-index:2}
+thead th.sorted-asc::after{content:" ▲";font-size:9px;opacity:.8}
+thead th.sorted-desc::after{content:" ▼";font-size:9px;opacity:.8}
+thead th:hover{background:#055a8c}
+tbody tr{border-bottom:1px solid var(--border);transition:background .15s}
+tbody tr:hover{background:var(--blue-lt)}
+tbody tr.expanded-row{background:var(--blue-lt)}
+td{padding:8px 8px;vertical-align:middle;white-space:nowrap}
+td.name-cell{font-weight:600;color:var(--text);white-space:normal;min-width:130px}
+td.rank-cell{font-weight:700;color:var(--blue);font-size:13px;min-width:36px}
+
+/* DCS2 score cell — color coded */
+.dcs2-cell{font-weight:700;font-size:13px;min-width:52px}
+.dcs2-hi{color:#1a7a4a}
+.dcs2-md{color:#c67400}
+.dcs2-lo{color:#8a9aaa}
+
+/* Component mini-bars */
+.comp-bar-wrap{display:flex;align-items:center;gap:5px;min-width:90px}
+.comp-bar{height:6px;border-radius:3px;background:var(--border);flex:1;overflow:hidden}
+.comp-bar-fill{height:100%;border-radius:3px;background:var(--blue)}
+.comp-val{font-size:10px;color:var(--muted);width:28px;text-align:right;flex-shrink:0}
+
+/* Tier badge */
+.tier-badge{font-size:9px;font-weight:700;padding:2px 5px;border-radius:3px;white-space:nowrap}
+.tb-p5{background:#e8f2f8;color:#04446c}
+.tb-hm{background:#e6f4ed;color:#1a7a4a}
+.tb-mm{background:#fdf3e7;color:#c67400}
+.tb-lm{background:#f5e8e8;color:#8a2c2c}
+
+/* Class badge */
+.cls-badge{font-size:9px;font-weight:700;padding:2px 5px;border-radius:3px;background:var(--gold-lt);color:#8a5500}
+
+/* Measurement chip */
+.meas-chip{font-size:10px;color:var(--blue);font-weight:600}
+.meas-na{font-size:10px;color:var(--muted)}
+
+/* Player headshot */
+.player-avatar{width:34px;height:34px;border-radius:50%;object-fit:cover;flex-shrink:0;background:var(--blue-lt);border:1px solid var(--border)}
+.player-cell-inner{display:flex;align-items:center;gap:9px}
+
+/* No results */
+.no-results{text-align:center;padding:40px;color:var(--muted);font-size:13px}
+
+/* Pagination */
+.pagination{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:14px;flex-wrap:wrap}
+.pg-btn{height:30px;min-width:30px;padding:0 8px;border:1.5px solid var(--border);background:var(--white);font-family:'Libre Franklin',sans-serif;font-size:11px;color:var(--text);cursor:pointer;border-radius:3px}
+.pg-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.pg-btn:hover:not(.active){border-color:var(--blue);color:var(--blue)}
+.pg-btn:disabled{opacity:.4;cursor:default}
+
+/* Validation note */
+.val-note{font-size:11px;color:var(--muted);background:var(--green-lt);border:1px solid #b2d8c4;padding:8px 12px;border-radius:4px;margin-top:8px;line-height:1.6}
+.val-note strong{color:var(--green)}
+
+/* Mobile responsive */
+@media(max-width:640px){
+  .page-wrap{padding:10px 8px}
+  .filter-bar{gap:6px}
+  .detail-grid{grid-template-columns:1fr 1fr}
+  .header-nav{gap:10px}
+}
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <!-- Header -->
+  <div class="site-header">
+    <div class="site-logo">gaussian<span>hoops</span></div>
+    <nav class="header-nav">
+      <a href="gaussianhoops_ncaa_ranking.html">NCAA Ranking</a>
+      <a href="gaussianhoops_playmaking_leaderboard.html">Playmaking</a>
+      <a href="gaussianhoops_3pt_leaderboard.html">3PT</a>
+      <a href="gaussianhoops_nba_draft.html" class="active">NBA Draft</a>
+    </nav>
+  </div>
+
+  <!-- Intro card -->
+  <div class="card card-top intro">
+    <div class="intro-title">🏀 NBA DRAFT BOARD 2026</div>
+    <div class="intro-text">
+      Prospect rankings powered by <strong>DCS v2 — Draft Ceiling Score</strong>, our research-validated draft metric built from five components:
+      Physical Upside (PUI), Shooting Talent (STI), Athleticism (AC), Playmaking (PMI), and Scoring Efficiency (SEU).
+      Age and class-year multipliers reward youth and penalise senior production. Competition-level adjustments discount Low-Major stats.
+      Validated against 2020–2024 draft classes: <strong>ρ = 0.39 Spearman correlation</strong> with actual pick numbers (vs ρ = 0.10 for raw stats).
+    </div>
+    <div class="val-note">
+      <strong>Validation:</strong> DCS v2 tested on 5 draft classes (2020–2024, n≈230 picks).
+      Best in 2023 (ρ = +0.55). Measurements data for current prospects improves as combine season approaches.
+      This is a <em>ceiling model</em> — it intentionally overweights youth and physical tools.
+    </div>
+
+    <div class="expander">
+      <button class="exp-toggle" onclick="toggleExp(this)">
+        <span>📐 Methodology — How DCS v2 is calculated</span>
+        <span class="exp-arr">▼</span>
+      </button>
+      <div class="exp-body">
+        <p>DCS v2 is a composite draft-ceiling signal. Unlike production metrics (PPG, PER), it weights attributes that translate to the NBA over college dominance that doesn't.</p>
+        <table>
+          <tr><th>Component</th><th>Weight</th><th>What it measures</th></tr>
+          <tr><td><span class="metric-badge" style="background:#8B5CF6">PUI</span> Physical Upside</td><td>25%</td><td>Wingspan ratio + standing reach, percentiled within position group. Missing → neutral 50.</td></tr>
+          <tr><td><span class="metric-badge gold">STI</span> Shooting Talent</td><td>22%</td><td>Bayesian 3P% + FT% + TS% + 3P attempt rate. Bayesian shrinkage handles small samples.</td></tr>
+          <tr><td><span class="metric-badge" style="background:#ef4444">AC</span> Athleticism</td><td>20%</td><td>Position-adjusted STL% + BLK% + ORB%. Proxy for athleticism via stat-line impact.</td></tr>
+          <tr><td><span class="metric-badge" style="background:#10b981">PMI</span> Playmaking</td><td>18%</td><td>AST% × 0.40 + AST/TO × 0.40 + USG% × 0.20. Measures creation and decision quality.</td></tr>
+          <tr><td><span class="metric-badge" style="background:#3b82f6">SEU</span> Scoring Efficiency</td><td>15%</td><td>TS% above expected at that usage level (regression residual). Rewards efficient scorers.</td></tr>
+        </table>
+        <p style="margin-top:8px"><strong>Multipliers applied after composite:</strong></p>
+        <p>• <strong>Age multiplier</strong>: 18yo = ×1.65, 19yo = ×1.35, 20yo = ×1.12, 21yo = ×1.00, 22yo = ×0.85, 23yo+ = ×0.70</p>
+        <p>• <strong>Class multiplier</strong>: Fr = ×1.00, So = ×0.97, Jr = ×0.88, Sr = ×0.75 (ceiling is largely known)</p>
+        <p>• <strong>Tier multiplier</strong>: Power 5 = ×1.00, High-Major = ×0.95, Mid-Major = ×0.88, Low-Major = ×0.78</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main board card -->
+  <div class="card card-top">
+
+    <!-- Filters -->
+    <div class="filter-bar">
+      <span class="filter-lbl">Filter:</span>
+      <div class="search-wrap">
+        <svg class="search-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input class="si" id="srch" type="text" placeholder="Search player…" oninput="applyFilters()">
+      </div>
+      <select class="fs" id="fPos" onchange="applyFilters()">
+        <option value="">All Positions</option>
+        <option value="GUARD">Guard</option>
+        <option value="WING">Wing</option>
+        <option value="FORWARD">Forward</option>
+        <option value="BIG">Big</option>
+      </select>
+      <select class="fs" id="fCls" onchange="applyFilters()">
+        <option value="">All Classes</option>
+        <option value="Fr">Freshman</option>
+        <option value="So">Sophomore</option>
+        <option value="Jr">Junior</option>
+        <option value="Sr">Senior</option>
+      </select>
+      <select class="fs" id="fTier" onchange="applyFilters()">
+        <option value="">All Tiers</option>
+        <option value="Power 5">Power 5</option>
+        <option value="High-Major">High-Major</option>
+        <option value="Mid-Major">Mid-Major</option>
+        <option value="Low-Major">Low-Major</option>
+      </select>
+      <select class="fs" id="fMeas" onchange="applyFilters()">
+        <option value="">All Players</option>
+        <option value="1">Measured Only</option>
+      </select>
+      <select class="fs" id="fShow" onchange="applyFilters()">
+        <option value="100">Top 100</option>
+        <option value="50">Top 50</option>
+        <option value="200">Top 200</option>
+        <option value="all">All</option>
+      </select>
+    </div>
+
+    <!-- Results meta -->
+    <div class="results-meta">
+      <div>
+        <span class="results-title">2026 NBA Draft Rankings</span>
+        <span class="results-count" id="cnt"> — loading…</span>
+      </div>
+      <span class="sort-note">Click any column header to sort</span>
+    </div>
+
+    <!-- Table -->
+    <div class="tbl-wrap">
+      <table id="tbl">
+        <thead>
+          <tr>
+            <th onclick="sortBy('rank')">#</th>
+            <th onclick="sortBy('name')">Player</th>
+            <th onclick="sortBy('pos')">Pos</th>
+            <th onclick="sortBy('cls')">Cls</th>
+            <th onclick="sortBy('age')">Age</th>
+            <th onclick="sortBy('team')">Team</th>
+            <th onclick="sortBy('tier')">Tier</th>
+            <th onclick="sortBy('dcs2')" title="Draft Ceiling Score v2 — primary ranking metric">DCS v2 ↓</th>
+            <th onclick="sortBy('pui')" title="Physical Upside Index — wingspan + reach">PUI</th>
+            <th onclick="sortBy('sti')" title="Shooting Talent Index">STI</th>
+            <th onclick="sortBy('ac')"  title="Athleticism Composite">AC</th>
+            <th onclick="sortBy('pmi')" title="Playmaking Index">PMI</th>
+            <th onclick="sortBy('seu')" title="Scoring Efficiency at Usage">SEU</th>
+            <th onclick="sortBy('ppg')">PPG</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      <div class="no-results hidden" id="noRes">No players match your filters.</div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination" id="pgn"></div>
+  </div>
+
+</div><!-- /page-wrap -->
+
+<script>
+const DRAFT_DATA = [];
+
+// ── State ────────────────────────────────────────────────────────────────────────
+let filtered  = [];
+let sortCol   = 'rank';
+let sortDir   = 1;       // 1 = asc (rank), -1 = desc (scores)
+let page      = 1;
+const PER_PAGE = 50;
+
+// ── Helpers ──────────────────────────────────────────────────────────────────────
+const fmtN = (v, d=1) => v == null ? '—' : Number(v).toFixed(d);
+const fmtPct = v => v == null ? '—' : Number(v).toFixed(1) + '%';
+
+function tierBadge(t) {
+  if (!t) return '';
+  const cls = t==='Power 5'?'tb-p5':t==='High-Major'?'tb-hm':t==='Mid-Major'?'tb-mm':'tb-lm';
+  const short = t==='Power 5'?'P5':t==='High-Major'?'HM':t==='Mid-Major'?'MM':'LM';
+  return `<span class="tier-badge ${cls}">${short}</span>`;
+}
+
+function dcs2Color(v) {
+  if (v == null) return '';
+  if (v >= 70) return 'dcs2-hi';
+  if (v >= 50) return 'dcs2-md';
+  return 'dcs2-lo';
+}
+
+function barCell(val) {
+  if (val == null) return '<td>—</td>';
+  const pct = Math.min(100, Math.max(0, val));
+  return `<td>
+    <div class="comp-bar-wrap">
+      <div class="comp-bar"><div class="comp-bar-fill" style="width:${pct}%"></div></div>
+      <span class="comp-val">${val.toFixed(0)}</span>
+    </div>
+  </td>`;
+}
+
+// ── Filters & Render ─────────────────────────────────────────────────────────────
+function applyFilters() {
+  const q     = document.getElementById('srch').value.toLowerCase();
+  const pos   = document.getElementById('fPos').value;
+  const cls   = document.getElementById('fCls').value;
+  const tier  = document.getElementById('fTier').value;
+  const meas  = document.getElementById('fMeas').value;
+  const show  = document.getElementById('fShow').value;
+  const maxN  = show === 'all' ? Infinity : parseInt(show);
+
+  filtered = DRAFT_DATA
+    .filter(d =>
+      (!q    || d.name.toLowerCase().includes(q)) &&
+      (!pos  || d.pos === pos) &&
+      (!cls  || (d.cls && d.cls.replace('RS-','') === cls)) &&
+      (!tier || d.tier === tier) &&
+      (!meas || d.ws_in != null)
+    )
+    .filter((_, i) => i < maxN);
+
+  page = 1;
+  render();
+}
+
+function sortBy(col) {
+  const scoreAsc = ['rank']; // these sort ascending by default
+  if (sortCol === col) {
+    sortDir *= -1;
+  } else {
+    sortCol = col;
+    sortDir = scoreAsc.includes(col) ? 1 : -1;
+  }
+  page = 1;
+  render();
+}
+
+function render() {
+  const sortedData = [...filtered].sort((a, b) => {
+    let av = a[sortCol], bv = b[sortCol];
+    if (av == null && bv == null) return 0;
+    if (av == null) return 1;
+    if (bv == null) return -1;
+    if (typeof av === 'string') return av.localeCompare(bv) * sortDir;
+    return (av - bv) * sortDir;
+  });
+
+  // Update header sort indicators
+  document.querySelectorAll('thead th').forEach(th => {
+    th.classList.remove('sorted-asc','sorted-desc');
+  });
+  const headers = ['rank','name','pos','cls','age','team','tier','dcs2','pui','sti','ac','pmi','seu','ppg'];
+  const idx = headers.indexOf(sortCol);
+  if (idx >= 0) {
+    const ths = document.querySelectorAll('thead th');
+    if (ths[idx]) ths[idx].classList.add(sortDir === 1 ? 'sorted-asc' : 'sorted-desc');
+  }
+
+  const total  = sortedData.length;
+  const pages  = Math.ceil(total / PER_PAGE);
+  const start  = (page - 1) * PER_PAGE;
+  const slice  = sortedData.slice(start, start + PER_PAGE);
+
+  document.getElementById('cnt').textContent = ` — ${total} prospects`;
+
+  const tbody = document.getElementById('tbody');
+  tbody.innerHTML = '';
+
+  slice.forEach((d, i) => {
+    const tr = document.createElement('tr');
+    const profileUrl = 'player_profile_v17.html?player=' + encodeURIComponent(d.name);
+    const fallbackAvatar = `https://a.espncdn.com/combiner/i?img=/i/headshots/nophoto.png&w=350&h=254`;
+    const avatarSrc = d.headshot || fallbackAvatar;
+    tr.innerHTML = `
+      <td class="rank-cell">${d.rank}</td>
+      <td class="name-cell">
+        <div class="player-cell-inner">
+          <img class="player-avatar" src="${avatarSrc}" onerror="this.src='${fallbackAvatar}'" alt="">
+          <div>
+            <a href="${profileUrl}" style="color:inherit;text-decoration:none;font-weight:600">${d.name}</a>${d.nat && d.nat!=='USA'?` <span style="font-size:9px;color:var(--muted)">${d.nat}</span>`:''}
+            <div style="font-size:9px;color:var(--muted);font-weight:400;margin-top:1px">${d.team || ''} · ${d.conf || ''}</div>
+          </div>
+        </div>
+      </td>
+      <td>${d.pos || '—'}</td>
+      <td><span class="cls-badge">${d.cls || '—'}</span></td>
+      <td>${d.age != null ? d.age.toFixed(1) : '—'}</td>
+      <td style="font-size:11px">${d.team || '—'}</td>
+      <td>${tierBadge(d.tier)}</td>
+      <td class="dcs2-cell ${dcs2Color(d.dcs2)}">${fmtN(d.dcs2)}</td>
+      ${barCell(d.pui)}
+      ${barCell(d.sti)}
+      ${barCell(d.ac)}
+      ${barCell(d.pmi)}
+      ${barCell(d.seu)}
+      <td style="font-weight:600">${fmtN(d.ppg)}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  if (total === 0) {
+    document.getElementById('noRes').classList.remove('hidden');
+    document.getElementById('tbl').style.display = 'none';
+  } else {
+    document.getElementById('noRes').classList.add('hidden');
+    document.getElementById('tbl').style.display = '';
+  }
+
+  renderPagination(pages);
+}
+
+
+function renderPagination(pages) {
+  const pgn = document.getElementById('pgn');
+  if (pages <= 1) { pgn.innerHTML = ''; return; }
+  let html = `<button class="pg-btn" onclick="goPage(${page-1})" ${page===1?'disabled':''}>‹</button>`;
+  for (let p = 1; p <= pages; p++) {
+    if (p === 1 || p === pages || Math.abs(p - page) <= 2) {
+      html += `<button class="pg-btn ${p===page?'active':''}" onclick="goPage(${p})">${p}</button>`;
+    } else if (Math.abs(p - page) === 3) {
+      html += `<span style="padding:0 4px;color:var(--muted)">…</span>`;
+    }
+  }
+  html += `<button class="pg-btn" onclick="goPage(${page+1})" ${page===pages?'disabled':''}>›</button>`;
+  pgn.innerHTML = html;
+}
+
+function goPage(p) {
+  page = p;
+  render();
+  document.querySelector('.tbl-wrap').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function toggleExp(btn) {
+  const body = btn.nextElementSibling;
+  body.classList.toggle('open');
+  btn.querySelector('.exp-arr').textContent = body.classList.contains('open') ? '▲' : '▼';
+}
+
+// ── Init ─────────────────────────────────────────────────────────────────────────
+applyFilters();
+</script>
+</body>
+</html>
